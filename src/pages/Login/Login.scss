@@ -1,0 +1,29 @@
+div.mainContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: azure;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    background-color: pink;
+    align-items: center;
+    padding: 0.5rem;
+  }
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    .input {
+        margin-left: 1rem;
+        outline: none;
+        border: none;
+        background-color: #f1f1f1;
+        border-radius: 0.2rem;
+        padding: 0.6rem;
+    }
+  }
+}
