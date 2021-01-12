@@ -1,13 +1,16 @@
 import React from 'react';
 
-import Login from './pages/Login/Login';
+import SignUp from './pages/Signup/Signup';
 import './App.scss';
+import { AuthProvider } from './utils/auth';
 
 function App() {
   return (
-    <div className='App'>
-      <Login />
-    </div>
+    <AuthProvider>
+      <div className='App'>
+        <SignUp />
+      </div>
+    </AuthProvider>
   );
 }
 
