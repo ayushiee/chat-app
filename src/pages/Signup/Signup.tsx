@@ -1,52 +1,65 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Signup.scss';
 import { useAuth } from '../../utils/auth';
 
 export default function SignUp() {
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const { signUp } = useAuth();
+  const [, setLoading] = useState<boolean>(false);
+  const { signUp, currentUser } = useAuth();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (passwordRef?.current?.value !== passwordConfirmRef?.current?.value) {
+    if (password !== confirmPassword) {
       return setError('Passwords do not match');
     }
 
     try {
       setError('');
       setLoading(true);
-      await signUp(emailRef?.current?.value, passwordRef?.current?.value);
+      await signUp(email, password);
     } catch {
       setError('Failed to create an account');
     }
-
     setLoading(false);
   };
 
   return (
     <>
       <div className='mainContainer'>
+        {console.log('user: ', currentUser)}
         <h3>Sign Up</h3>
-        {error && alert(error)}
         <div className='content'>
           <div className='item-row'>
             Email
-            <input type='text' className='input' ref={emailRef} required />
+            <input
+              type='text'
+              className='input'
+              required
+              onChange={e => {
+                setEmail(e.target.value);
+              }}
+            />
           </div>
           <div className='item-row'>
             Password
-            <input type='password' className='input' ref={passwordRef} required />
+            <input type='password' className='input' required onChange={e => setPassword(e.target.value)} />
           </div>
           <div className='item-row'>
             Confirm Password
-            <input type='password' className='input' ref={passwordConfirmRef} required />
+            <input type='password' className='input' required onChange={e => setConfirmPassword(e.target.value)} />
           </div>
-          <button type='button' onSubmit={handleSubmit} disabled={loading} onClick={() => console.log('sign up')}>
+          <button
+            type='submit'
+            onClick={e => {
+              console.log('form: ', e);
+              handleSubmit(e);
+            }}
+          >
+            {/* disabled={loading}> */}
             Sign up
           </button>
 
