@@ -2,17 +2,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { auth } from './firebase';
 import firebase from 'firebase';
 
-interface AuthContextProp {
-  children?: any;
+interface AuthContextProps {
+  children?: JSX.Element;
 }
 
-const AuthContext = React.createContext<any | null>(null);
+interface AuthContext {
+  currentUser: firebase.User | null;
+  signUp: (email: string, password: string) => Promise<firebase.auth.UserCredential>;
+}
+
+const AuthContext = React.createContext<AuthContext>({} as AuthContext);
 
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function AuthProvider({ children }: AuthContextProp) {
+export function AuthProvider({ children }: AuthContextProps) {
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(() => auth.currentUser);
 
   const signUp = async (email: string, password: string): Promise<firebase.auth.UserCredential> => {
@@ -27,6 +32,6 @@ export function AuthProvider({ children }: AuthContextProp) {
     return unsubscribe;
   }, []);
 
-  const value = { currentUser, signUp };
+  const value: AuthContext = { currentUser, signUp };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

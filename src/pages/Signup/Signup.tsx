@@ -21,6 +21,7 @@ export default function SignUp(): React.ReactElement {
     try {
       setLoading(true);
       await signUp(email, password);
+      //TODO: handle routing here
     } catch (error) {
       setError(error.message);
     } finally {
