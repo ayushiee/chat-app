@@ -9,6 +9,7 @@ interface AuthContextProps {
 interface AuthContext {
   currentUser: firebase.User | null;
   signUp: (email: string, password: string) => Promise<firebase.auth.UserCredential>;
+  login: (email: string, password: string) => Promise<firebase.auth.UserCredential>;
   isAuthenticated: boolean;
 }
 
@@ -27,6 +28,10 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
     return auth.createUserWithEmailAndPassword(email, password);
   };
 
+  const login = async (email: string, password: string): Promise<firebase.auth.UserCredential> => {
+    return auth.signInWithEmailAndPassword(email, password);
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: firebase.User | null) => {
       setCurrentUser(user);
@@ -37,6 +42,6 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
     return unsubscribe;
   }, []);
 
-  const value: AuthContext = { currentUser, signUp, isAuthenticated };
+  const value: AuthContext = { currentUser, signUp, isAuthenticated, login };
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 }

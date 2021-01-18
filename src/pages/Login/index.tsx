@@ -1,26 +1,22 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { useAuth } from '../../context/auth';
+import { ROUTES } from '../../utils/constants';
 
-import './Signup.scss';
+import '../Signup/Signup.scss';
 
-export default function SignUp(): React.ReactElement {
+export default function Login(): React.ReactElement {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const { signUp } = useAuth();
+  const { login } = useAuth();
 
-  const handleSubmit = async (email: string, password: string, confirmPassword: string): Promise<void> => {
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
+  const handleSubmit = async (email: string, password: string): Promise<void> => {
     try {
       setLoading(true);
-      await signUp(email, password);
+      await login(email, password);
       //TODO: handle routing here
     } catch (error) {
       setError(error.message);
@@ -32,7 +28,7 @@ export default function SignUp(): React.ReactElement {
   return (
     <>
       <div className='mainContainer'>
-        <h3>Sign Up</h3>
+        <h3>Log In</h3>
         <div className='content'>
           <div className='item-row'>
             Email
@@ -49,21 +45,12 @@ export default function SignUp(): React.ReactElement {
             Password
             <input type='password' className='input' required onChange={e => setPassword(e.target.value)} />
           </div>
-          <div className='item-row'>
-            Confirm Password
-            <input type='password' className='input' required onChange={e => setConfirmPassword(e.target.value)} />
-          </div>
-          <button
-            type='submit'
-            className='button'
-            onClick={() => handleSubmit(email, password, confirmPassword)}
-            disabled={loading}
-          >
-            Sign up
+          <button type='submit' className='button' onClick={() => handleSubmit(email, password)} disabled={loading}>
+            Log In
           </button>
         </div>
         {error && <span>{error}</span>}
-        Already have an account? Login
+        Create a new account? <Link to={ROUTES.SIGNUP}>Sign Up </Link>
       </div>
     </>
   );
