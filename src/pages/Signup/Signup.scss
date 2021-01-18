@@ -7,10 +7,27 @@ div.mainContainer {
   justify-content: center;
 
   .content {
-    background-color: pink;
+    background-color: #ccd8e7;
     align-items: center;
     padding: 0.5rem;
+
+    .button {
+      background-color: #0e62cf;
+      color: #fff;
+      align-self: center;
+      width: 100%;
+      border: none;
+      padding: 0.4rem;
+      outline: none;
+      transition: linear 200ms;
+      &:hover {
+        cursor: pointer;
+        background-color: #1354aa;
+        transform: translateY(-2px);
+      }
+    }
   }
+
   .item-row {
     display: flex;
     justify-content: space-between;
@@ -18,12 +35,12 @@ div.mainContainer {
     align-items: center;
 
     .input {
-        margin-left: 1rem;
-        outline: none;
-        border: none;
-        background-color: #f1f1f1;
-        border-radius: 0.2rem;
-        padding: 0.6rem;
+      margin-left: 1rem;
+      outline: none;
+      border: none;
+      background-color: #f1f1f1;
+      border-radius: 0.2rem;
+      padding: 0.6rem;
     }
   }
 }

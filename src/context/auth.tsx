@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { auth } from './firebase';
+import { auth } from '../utils/firebase';
 import firebase from 'firebase';
 
 interface AuthContextProps {
@@ -9,16 +9,19 @@ interface AuthContextProps {
 interface AuthContext {
   currentUser: firebase.User | null;
   signUp: (email: string, password: string) => Promise<firebase.auth.UserCredential>;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = React.createContext<AuthContext>({} as AuthContext);
 
-export function useAuth() {
+export function useAuth(): AuthContext {
   return useContext(AuthContext);
 }
 
-export function AuthProvider({ children }: AuthContextProps) {
+export function AuthProvider({ children }: AuthContextProps): JSX.Element {
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(() => auth.currentUser);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
 
   const signUp = async (email: string, password: string): Promise<firebase.auth.UserCredential> => {
     return auth.createUserWithEmailAndPassword(email, password);
@@ -27,11 +30,13 @@ export function AuthProvider({ children }: AuthContextProps) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: firebase.User | null) => {
       setCurrentUser(user);
+      setIsAuthenticated(true);
+      setLoading(false);
     });
 
     return unsubscribe;
   }, []);
 
-  const value: AuthContext = { currentUser, signUp };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const value: AuthContext = { currentUser, signUp, isAuthenticated };
+  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 }

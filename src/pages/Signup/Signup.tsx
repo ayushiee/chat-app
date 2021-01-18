@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useAuth } from '../../utils/auth';
+import { useAuth } from '../../context/auth';
 
 import './Signup.scss';
 
@@ -10,7 +10,7 @@ export default function SignUp(): React.ReactElement {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const { signUp, currentUser } = useAuth();
+  const { signUp } = useAuth();
 
   const handleSubmit = async (email: string, password: string, confirmPassword: string): Promise<void> => {
     if (password !== confirmPassword) {
@@ -28,8 +28,6 @@ export default function SignUp(): React.ReactElement {
       setLoading(false);
     }
   };
-
-  console.log(JSON.stringify(currentUser, null, 2));
 
   return (
     <>
@@ -55,14 +53,17 @@ export default function SignUp(): React.ReactElement {
             Confirm Password
             <input type='password' className='input' required onChange={e => setConfirmPassword(e.target.value)} />
           </div>
-          <button type='submit' onClick={() => handleSubmit(email, password, confirmPassword)} disabled={loading}>
+          <button
+            type='submit'
+            className='button'
+            onClick={() => handleSubmit(email, password, confirmPassword)}
+            disabled={loading}
+          >
             Sign up
           </button>
-          {error && <span>{error}</span>}
-          <button type='submit' onClick={() => console.log('login')}>
-            Login
-          </button>
         </div>
+        {error && <span>{error}</span>}
+        Already have an account? Login
       </div>
     </>
   );
