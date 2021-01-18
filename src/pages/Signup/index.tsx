@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import { useAuth } from '../../context/auth';
@@ -14,6 +14,7 @@ export default function SignUp(): React.ReactElement {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const { signUp } = useAuth();
+  const history = useHistory();
 
   const handleSubmit = async (email: string, password: string, confirmPassword: string): Promise<void> => {
     if (password !== confirmPassword) {
@@ -24,6 +25,7 @@ export default function SignUp(): React.ReactElement {
     try {
       setLoading(true);
       await signUp(email, password);
+      history.push(ROUTES.DASHBOARD);
       //TODO: handle routing here
     } catch (error) {
       toast.error(error.message);
