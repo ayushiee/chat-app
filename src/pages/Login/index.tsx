@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import { useAuth } from '../../context/auth';
 import { ROUTES } from '../../utils/constants';
 
 import '../Signup/Signup.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Login(): React.ReactElement {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { login } = useAuth();
 
@@ -19,7 +20,7 @@ export default function Login(): React.ReactElement {
       await login(email, password);
       //TODO: handle routing here
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -49,9 +50,20 @@ export default function Login(): React.ReactElement {
             Log In
           </button>
         </div>
-        {error && <span>{error}</span>}
         Create a new account? <Link to={ROUTES.SIGNUP}>Sign Up </Link>
       </div>
+      <ToastContainer
+        position='bottom-right'
+        autoClose={4000}
+        transition={Slide}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }

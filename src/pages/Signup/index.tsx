@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import { useAuth } from '../../context/auth';
 import { ROUTES } from '../../utils/constants';
 
 import './Signup.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUp(): React.ReactElement {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { signUp } = useAuth();
 
   const handleSubmit = async (email: string, password: string, confirmPassword: string): Promise<void> => {
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match.');
       return;
     }
 
@@ -25,7 +26,7 @@ export default function SignUp(): React.ReactElement {
       await signUp(email, password);
       //TODO: handle routing here
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -64,9 +65,20 @@ export default function SignUp(): React.ReactElement {
             Sign up
           </button>
         </div>
-        {error && <span>{error}</span>}
         Already have an account? <Link to={ROUTES.LOGIN}>Login </Link>
       </div>
+      <ToastContainer
+        position='bottom-right'
+        autoClose={4000}
+        transition={Slide}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }
