@@ -26,7 +26,6 @@ export default function SignUp(): React.ReactElement {
       setLoading(true);
       await signUp(email, password);
       history.push(ROUTES.DASHBOARD);
-      //TODO: handle routing here
     } catch (error) {
       toast.error(error.message);
     } finally {

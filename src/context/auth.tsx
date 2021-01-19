@@ -35,12 +35,12 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
 
   const logout = async (): Promise<void> => {
     return auth.signOut();
-  }
-    
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: firebase.User | null) => {
       setCurrentUser(user);
-      setIsAuthenticated(true);
+      currentUser ? setIsAuthenticated(true) : setIsAuthenticated(false);
       setLoading(false);
     });
 
