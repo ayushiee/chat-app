@@ -18,7 +18,6 @@ export default function PublicRoute({
   const { isAuthenticated } = useAuth();
 
   const render = (props: any) => {
-    console.log(isAuthenticated);
     if (isAuthenticated && restricted) {
       return <Redirect to={ROUTES.DASHBOARD} />;
     } else {

@@ -40,7 +40,8 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: firebase.User | null) => {
       setCurrentUser(user);
-      currentUser ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      setIsAuthenticated(!!user);
+      //TODO: handle loading
       setLoading(false);
     });
 

@@ -20,7 +20,6 @@ export default function Login(): React.ReactElement {
       setLoading(true);
       await login(email, password);
       history.push(ROUTES.DASHBOARD);
-      //TODO: handle routing here
     } catch (error) {
       toast.error(error.message);
     } finally {
