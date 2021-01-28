@@ -65,7 +65,7 @@ export default function ChatDashboard(): React.ReactElement {
         <form onSubmit={sendMessage}>
           <input
             type='text'
-            className='type-message'
+            className='messageInput'
             placeholder='Type your message here'
             onChange={e => {
               setMsg(e.target.value);
