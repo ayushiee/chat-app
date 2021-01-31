@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer, Slide } from 'react-toastify';
 import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
+import { createMessage } from '../../context/chat';
 import { ROUTES } from '../../utils/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +14,6 @@ import './Dashboard.scss';
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
-  const messageRef: firebase.firestore.DocumentData = firestore.collection('messages');
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
 
@@ -25,6 +25,16 @@ export default function ChatDashboard(): React.ReactElement {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const sendMessage = async (e: any) => {
+    e.preventDefault();
+
+    const message = createMessage(msg.trim(), currentUser?.uid, '12355');
+
+    await firestore.collection('messages').doc(message.id).set(message);
+
+    setMsg('');
   };
 
   useEffect(() => {
@@ -46,17 +56,6 @@ export default function ChatDashboard(): React.ReactElement {
     return message;
   }, []);
 
-  const sendMessage = async (e: any) => {
-    e.preventDefault();
-    const send = await messageRef.add({
-      text: msg.trim(),
-      createdAt: firebase.firestore.Timestamp.now(),
-      uid: currentUser?.uid
-    });
-
-    setMsg('');
-  };
-
   console.log(JSON.stringify(currentUser, null, 2));
   return (
     <>
@@ -72,15 +71,27 @@ export default function ChatDashboard(): React.ReactElement {
             }}
             value={msg}
           />
-          <button type='submit' disabled={!msg}>
+          <button type='submit' disabled={!msg || msg.trim().length === 0}>
             Send
           </button>
         </form>
-        {/* {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)} */}
+        {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
         <button type='button' onClick={() => handleLogout()}>
           Log out
         </button>
       </div>
+      <ToastContainer
+        position='bottom-right'
+        autoClose={4000}
+        transition={Slide}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }
@@ -89,6 +100,8 @@ function MessageBubble({ message }: { message: firebase.firestore.DocumentData }
   const { text, uid } = message;
   const { currentUser } = useAuth();
   const messageClass = uid === currentUser?.uid ? 'sent' : 'received';
+
+  console.log(message);
   return (
     <>
       <div className={`message ${messageClass}`}>
