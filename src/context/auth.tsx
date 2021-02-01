@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { auth } from '../utils/firebase';
 import firebase from 'firebase';
+
+import { auth, firestore } from '../utils/firebase';
+import { createUser } from './collectionMethods';
 
 interface AuthContextProps {
   children?: JSX.Element;
@@ -37,14 +39,19 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
     return auth.signOut();
   };
 
+  const sendUser = async (user: firebase.User | null): Promise<void> => {
+    const newUser = createUser(user?.uid, 'abc', user?.email, '111');
+    await firestore.collection('users').doc(newUser.id).set(newUser);
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: firebase.User | null) => {
       setCurrentUser(user);
+      user && sendUser(user);
       setIsAuthenticated(!!user);
       //TODO: handle loading
       setLoading(false);
     });
-
     return unsubscribe;
   }, []);
 

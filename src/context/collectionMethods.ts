@@ -15,3 +15,14 @@ export function createMessage(text: string, createdBy: UserId, groupId: GroupId)
 
   return message;
 }
+
+export function createUser(id: UserId, name: string, email: string | null | undefined, groupId: GroupId): Users {
+  const user: Users = {
+    id,
+    name,
+    email,
+    group: [groupId]
+  };
+
+  return user;
+}

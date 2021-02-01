@@ -5,7 +5,7 @@ import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
-import { createMessage } from '../../context/chat';
+import { createMessage } from '../../context/collectionMethods';
 import { ROUTES } from '../../utils/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
