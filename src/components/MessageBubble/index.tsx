@@ -7,7 +7,6 @@ export default function MessageBubble({ message }: { message: firebase.firestore
   const { currentUser } = useAuth();
   const messageClass = uid === currentUser?.uid ? 'sent' : 'received';
 
-  console.log(message);
   return (
     <>
       <div className={`message ${messageClass}`}>
