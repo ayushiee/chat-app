@@ -5,17 +5,27 @@ import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
-import { createMessage } from '../../context/collectionMethods';
+import { createMessage, createGroup } from '../../context/collectionMethods';
 import { ROUTES } from '../../utils/constants';
+import { MessageBubble } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
+import { UserId } from '../../utils/types';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
+  const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
+
+  //TODO: Handle multiple group instance creation
+  const onAddNewUser = async (id: UserId) => {
+    const newGroup = createGroup(currentUser?.uid, id);
+
+    await firestore.collection('groups').doc(newGroup.id).set(newGroup);
+  };
 
   const handleLogout = async () => {
     try {
@@ -25,6 +35,18 @@ export default function ChatDashboard(): React.ReactElement {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const showExistingUsers = () => {
+    firestore.collection('users').onSnapshot(snapshot => {
+      const docs: firebase.firestore.DocumentData = [];
+      snapshot.forEach(doc => {
+        docs.push({
+          ...doc.data()
+        });
+      });
+      setExistingUsers(docs);
+    });
   };
 
   const sendMessage = async (e: any) => {
@@ -46,8 +68,7 @@ export default function ChatDashboard(): React.ReactElement {
         const docs: firebase.firestore.DocumentData = [];
         snapshot.forEach(doc => {
           docs.push({
-            ...doc.data(),
-            id: doc.id
+            ...doc.data()
           });
         });
         setText(docs);
@@ -56,7 +77,6 @@ export default function ChatDashboard(): React.ReactElement {
     return message;
   }, []);
 
-  console.log(JSON.stringify(currentUser, null, 2));
   return (
     <>
       <div className='main'>
@@ -76,8 +96,22 @@ export default function ChatDashboard(): React.ReactElement {
           </button>
         </form>
         {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
+        {existingUsers &&
+          existingUsers.map((item: firebase.firestore.DocumentData) => {
+            if (item.email !== currentUser?.email) {
+              return <AddContact key={item.id} userDetails={item} onAddNewUser={onAddNewUser} />;
+            }
+          })}
         <button type='button' onClick={() => handleLogout()}>
           Log out
+        </button>
+        <button
+          type='button'
+          onClick={() => {
+            showExistingUsers();
+          }}
+        >
+          Add contact
         </button>
       </div>
       <ToastContainer
@@ -96,16 +130,21 @@ export default function ChatDashboard(): React.ReactElement {
   );
 }
 
-function MessageBubble({ message }: { message: firebase.firestore.DocumentData }): React.ReactElement {
-  const { text, uid } = message;
+function AddContact({
+  userDetails,
+  onAddNewUser
+}: {
+  userDetails: firebase.firestore.DocumentData;
+  onAddNewUser: (id: UserId) => void;
+}): React.ReactElement {
+  const { id, email } = userDetails;
   const { currentUser } = useAuth();
-  const messageClass = uid === currentUser?.uid ? 'sent' : 'received';
+  const userClass = id === currentUser?.uid ? 'added' : 'new';
 
-  console.log(message);
   return (
     <>
-      <div className={`message ${messageClass}`}>
-        <p>{text}</p>
+      <div className={`userDetails ${userClass}`}>
+        <div onClick={() => onAddNewUser(id)}>{email}</div>
       </div>
     </>
   );

@@ -1,6 +1,4 @@
 import cuid from 'cuid';
-import firebase from 'firebase';
-import { firestore } from '../utils/firebase';
 
 import { Users, Groups, Message, UserId, GroupId } from '../utils/types';
 
@@ -25,4 +23,14 @@ export function createUser(id: UserId, name: string, email: string | null | unde
   };
 
   return user;
+}
+
+export function createGroup(user1: UserId, user2: UserId): Groups {
+  const group: Groups = {
+    id: cuid(),
+    createdAt: new Date(),
+    members: [user1, user2]
+  };
+
+  return group;
 }
