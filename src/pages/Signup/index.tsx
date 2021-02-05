@@ -36,37 +36,50 @@ export default function SignUp(): React.ReactElement {
   return (
     <>
       <div className='mainContainer'>
-        <h3>Sign Up</h3>
-        <div className='content'>
-          <div className='item-row'>
-            Email
-            <input
-              type='text'
-              className='input'
-              required
-              onChange={e => {
-                setEmail(e.target.value);
-              }}
-            />
-          </div>
-          <div className='item-row'>
-            Password
-            <input type='password' className='input' required onChange={e => setPassword(e.target.value)} />
-          </div>
-          <div className='item-row'>
-            Confirm Password
-            <input type='password' className='input' required onChange={e => setConfirmPassword(e.target.value)} />
-          </div>
-          <button
-            type='submit'
-            className='button'
-            onClick={() => handleSubmit(email, password, confirmPassword)}
-            disabled={loading}
-          >
-            Sign up
-          </button>
+        <div>
+          <img
+            className='image'
+            src='https://images.unsplash.com/photo-1567845735143-5e5d9d3f8f81?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+          />
         </div>
-        Already have an account? <Link to={ROUTES.LOGIN}>Login </Link>
+        <div className='rightBox'>
+          <h1>Sign Up</h1>
+          <div className='formBox'>
+            <div className='itemRow'>
+              <label className='inputLabel'> Email</label>
+              <input
+                type='text'
+                className='input'
+                required
+                onChange={e => {
+                  setEmail(e.target.value);
+                }}
+              />
+            </div>
+            <div className='itemRow'>
+              <label className='inputLabel'>Password</label>
+              <input type='password' className='input' required onChange={e => setPassword(e.target.value)} />
+            </div>
+            <div className='itemRow'>
+              <label className='inputLabel'> Confirm Password</label>
+              <input type='password' className='input' required onChange={e => setConfirmPassword(e.target.value)} />
+            </div>
+            <button
+              type='submit'
+              className='button'
+              onClick={() => handleSubmit(email, password, confirmPassword)}
+              disabled={loading}
+            >
+              Sign up
+            </button>
+          </div>
+          <div className='row'>
+            Already have an account?{' '}
+            <div className='text'>
+              <Link to={ROUTES.LOGIN}> Login</Link>
+            </div>
+          </div>
+        </div>
       </div>
       <ToastContainer
         position='bottom-right'

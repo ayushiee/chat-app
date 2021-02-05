@@ -1,44 +1,91 @@
 div.mainContainer {
   display: flex;
-  flex-direction: column;
-  background-color: azure;
+  flex-direction: row;
+  background-color: #e2eafc; //theme
   height: 100vh;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  overflow: hidden;
 
-  .content {
-    background-color: #ccd8e7;
+  .image {
+    object-fit: contain;
+  }
+
+  .rightBox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 0.5rem;
+    justify-content: center;
 
-    .button {
-      background-color: #0e62cf;
-      color: #fff;
-      align-self: center;
-      width: 100%;
-      border: none;
-      padding: 0.4rem;
-      outline: none;
-      transition: linear 200ms;
-      &:hover {
-        cursor: pointer;
-        background-color: #1354aa;
-        transform: translateY(-2px);
+    .formBox {
+      // background-color: snow;
+      display: flex;
+      flex-direction: column;
+      width: 60%;
+      padding: 1rem;
+
+      .button {
+        background-color: #7099ff;
+        color: #fff;
+        font-size: 1.1rem;
+        align-self: center;
+        width: 100%;
+        border: none;
+        border-radius: 0.2rem;
+        padding: 0.7rem;
+        outline: none;
+        transition: linear 200ms;
+        &:hover {
+          cursor: pointer;
+          background-color: #8eafff;
+          transform: translateY(-2.5px);
+        }
+      }
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+
+      .text {
+        margin-left: 0.3rem;
+        text-decoration: none;
+        font-weight: 700;
+        color: #5c8dff;
+        transition: linear 200ms;
+
+        :link {
+          text-decoration: none;
+        }
+
+        :active, :visited {
+          color:#8eafff;
+        }
+
+        &:hover {
+          transform: translateY(-1px);
+        }
       }
     }
   }
 
-  .item-row {
+  .itemRow {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    margin-bottom: 1rem;
-    align-items: center;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
 
+    .inputLabel {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
     .input {
-      margin-left: 1rem;
       outline: none;
       border: none;
-      background-color: #f1f1f1;
+      width: 97%;
+      background-color: #fff;
       border-radius: 0.2rem;
       padding: 0.6rem;
     }
