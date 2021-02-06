@@ -36,10 +36,10 @@ export default function SignUp(): React.ReactElement {
   return (
     <>
       <div className='mainContainer'>
-        <div>
+        <div >
           <img
             className='image'
-            src='https://images.unsplash.com/photo-1567845735143-5e5d9d3f8f81?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+            src='https://firebasestorage.googleapis.com/v0/b/chat-app-4081a.appspot.com/o/asset%2Fsignup.png?alt=media&token=035af358-0cfc-4a62-9883-dff46171aa61'
           />
         </div>
         <div className='rightBox'>
