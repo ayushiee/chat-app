@@ -11,7 +11,6 @@ import { MessageBubble } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
-import { UserId } from '../../utils/types';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
@@ -19,12 +18,18 @@ export default function ChatDashboard(): React.ReactElement {
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
   const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
 
-  //TODO: Handle multiple group instance creation
-  const onAddNewUser = async (id: UserId) => {
-    const newGroup = createGroup(currentUser?.uid, id);
+  const onAddNewUser = async (newUser: firebase.firestore.DocumentData) => {
+    setSelectedUser(newUser);
+    // const newGroup = createGroup(currentUser?.uid, id);
 
-    await firestore.collection('groups').doc(newGroup.id).set(newGroup);
+    // await firestore.collection('groups').doc(newGroup.id).set(newGroup);
+  };
+
+  const handleModal = (isOpen: boolean) => {
+    setIsModal(isOpen);
   };
 
   const handleLogout = async () => {
@@ -99,20 +104,23 @@ export default function ChatDashboard(): React.ReactElement {
         {existingUsers &&
           existingUsers.map((item: firebase.firestore.DocumentData) => {
             if (item.email !== currentUser?.email) {
-              return <AddContact key={item.id} userDetails={item} onAddNewUser={onAddNewUser} />;
+              return (
+                <AddContact
+                  key={item.id}
+                  userDetails={item}
+                  onAddNewUser={onAddNewUser}
+                  onClick={handleModal}
+                />
+              );
             }
           })}
         <button type='button' onClick={() => handleLogout()}>
           Log out
         </button>
-        <button
-          type='button'
-          onClick={() => {
-            showExistingUsers();
-          }}
-        >
+        <button type='button' onClick={() => showExistingUsers()}>
           Add contact
         </button>
+        <CreateUserModal isOpen={isModal}>{selectedUser?.email}</CreateUserModal>
       </div>
       <ToastContainer
         position='bottom-right'
@@ -132,20 +140,42 @@ export default function ChatDashboard(): React.ReactElement {
 
 function AddContact({
   userDetails,
-  onAddNewUser
+  onAddNewUser,
+  onClick
 }: {
   userDetails: firebase.firestore.DocumentData;
-  onAddNewUser: (id: UserId) => void;
+  onAddNewUser: (user: firebase.firestore.DocumentData) => void;
+  onClick: (isModal: boolean) => void;
 }): React.ReactElement {
   const { id, email } = userDetails;
   const { currentUser } = useAuth();
   const userClass = id === currentUser?.uid ? 'added' : 'new';
+  const [isModal, setIsModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    onClick(isModal);
+  }, [isModal]);
 
   return (
     <>
       <div className={`userDetails ${userClass}`}>
-        <div onClick={() => onAddNewUser(id)}>{email}</div>
+        <div
+          onClick={() => {
+            onAddNewUser(userDetails);
+            setIsModal(!isModal);
+          }}
+        >
+          {email}
+        </div>
       </div>
     </>
   );
+}
+
+function CreateUserModal({ isOpen, children }: { isOpen: boolean; children: any }) {
+  return isOpen ? (
+    <>
+      <div>{children}</div>
+    </>
+  ) : null;
 }
