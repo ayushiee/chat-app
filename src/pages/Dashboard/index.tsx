@@ -104,14 +104,7 @@ export default function ChatDashboard(): React.ReactElement {
         {existingUsers &&
           existingUsers.map((item: firebase.firestore.DocumentData) => {
             if (item.email !== currentUser?.email) {
-              return (
-                <AddContact
-                  key={item.id}
-                  userDetails={item}
-                  onAddNewUser={onAddNewUser}
-                  onClick={handleModal}
-                />
-              );
+              return <AddContact key={item.id} userDetails={item} onAddNewUser={onAddNewUser} onClick={handleModal} />;
             }
           })}
         <button type='button' onClick={() => handleLogout()}>
@@ -120,7 +113,7 @@ export default function ChatDashboard(): React.ReactElement {
         <button type='button' onClick={() => showExistingUsers()}>
           Add contact
         </button>
-        <CreateUserModal isOpen={isModal}>{selectedUser?.email}</CreateUserModal>
+        <CreateUserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
       </div>
       <ToastContainer
         position='bottom-right'
@@ -172,10 +165,52 @@ function AddContact({
   );
 }
 
-function CreateUserModal({ isOpen, children }: { isOpen: boolean; children: any }) {
+function CreateUserModal({
+  isOpen,
+  currentUser,
+  selectedUser
+}: {
+  isOpen: boolean;
+  currentUser: firebase.User | null;
+  selectedUser: firebase.firestore.DocumentData | undefined;
+}) {
+  const [firstMsg, setFirstMsg] = useState('');
+
+  const sendMessage = async (e: any) => {
+    e.preventDefault();
+
+    const group = createGroup(currentUser?.uid, selectedUser?.id);
+    const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
+
+    await firestore.collection('groups').doc(group.id).set(group);
+    await firestore.collection('messages').doc(message.id).set(message);
+    await firestore.collection('groups').doc(group.id).update({
+      messages: firebase.firestore.FieldValue.arrayUnion(message.id)
+    });
+
+    setFirstMsg('');
+    console.log('done wohoo');
+  };
+
   return isOpen ? (
     <>
-      <div>{children}</div>
+      <div className='modalContainer'>
+        {selectedUser?.email}
+        <form onSubmit={sendMessage}>
+          <input
+            type='text'
+            className='messageInput'
+            placeholder='Say hi!'
+            onChange={e => {
+              setFirstMsg(e.target.value);
+            }}
+            value={firstMsg}
+          />
+          <button type='submit' disabled={!firstMsg || firstMsg.trim().length === 0}>
+            Send
+          </button>
+        </form>
+      </div>
     </>
   ) : null;
 }
