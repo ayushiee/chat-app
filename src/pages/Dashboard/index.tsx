@@ -7,7 +7,7 @@ import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
 import { createMessage, createGroup } from '../../context/collectionMethods';
 import { ROUTES } from '../../utils/constants';
-import { MessageBubble } from '../../components';
+import { MessageBubble, AddContact } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
@@ -21,11 +21,8 @@ export default function ChatDashboard(): React.ReactElement {
   const [isModal, setIsModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
 
-  const onAddNewUser = async (newUser: firebase.firestore.DocumentData) => {
+  const onSetSelectedUser = async (newUser: firebase.firestore.DocumentData) => {
     setSelectedUser(newUser);
-    // const newGroup = createGroup(currentUser?.uid, id);
-
-    // await firestore.collection('groups').doc(newGroup.id).set(newGroup);
   };
 
   const handleModal = (isOpen: boolean) => {
@@ -104,7 +101,7 @@ export default function ChatDashboard(): React.ReactElement {
         {existingUsers &&
           existingUsers.map((item: firebase.firestore.DocumentData) => {
             if (item.email !== currentUser?.email) {
-              return <AddContact key={item.id} userDetails={item} onAddNewUser={onAddNewUser} onClick={handleModal} />;
+              return <AddContact key={item.id} userDetails={item} onSetSelectedUser={onSetSelectedUser} onClick={handleModal} />;
             }
           })}
         <button type='button' onClick={() => handleLogout()}>
@@ -131,40 +128,6 @@ export default function ChatDashboard(): React.ReactElement {
   );
 }
 
-function AddContact({
-  userDetails,
-  onAddNewUser,
-  onClick
-}: {
-  userDetails: firebase.firestore.DocumentData;
-  onAddNewUser: (user: firebase.firestore.DocumentData) => void;
-  onClick: (isModal: boolean) => void;
-}): React.ReactElement {
-  const { id, email } = userDetails;
-  const { currentUser } = useAuth();
-  const userClass = id === currentUser?.uid ? 'added' : 'new';
-  const [isModal, setIsModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    onClick(isModal);
-  }, [isModal]);
-
-  return (
-    <>
-      <div className={`userDetails ${userClass}`}>
-        <div
-          onClick={() => {
-            onAddNewUser(userDetails);
-            setIsModal(!isModal);
-          }}
-        >
-          {email}
-        </div>
-      </div>
-    </>
-  );
-}
-
 function CreateUserModal({
   isOpen,
   currentUser,
@@ -176,20 +139,30 @@ function CreateUserModal({
 }) {
   const [firstMsg, setFirstMsg] = useState('');
 
+  useEffect(() => {
+    const userGroup = [currentUser?.uid, selectedUser?.id];
+    // const groups = firestore.collection('groups').where('members', 'array-contains-any', userGroup).get();
+
+    console.log('groupss: ', userGroup);
+  }, [selectedUser]);
+
   const sendMessage = async (e: any) => {
     e.preventDefault();
 
+    // const isGroup;
     const group = createGroup(currentUser?.uid, selectedUser?.id);
     const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
 
     await firestore.collection('groups').doc(group.id).set(group);
     await firestore.collection('messages').doc(message.id).set(message);
-    await firestore.collection('groups').doc(group.id).update({
-      messages: firebase.firestore.FieldValue.arrayUnion(message.id)
-    });
-
+    await firestore
+      .collection('groups')
+      .doc(group.id)
+      .update({
+        messages: firebase.firestore.FieldValue.arrayUnion(message.id)
+      });
+    // TODO: Check group collection for groups with currentUser and selectedUser and then render list
     setFirstMsg('');
-    console.log('done wohoo');
   };
 
   return isOpen ? (
