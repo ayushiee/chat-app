@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
 
 import { useAuth } from '../../context/auth';
+import './AddContact.scss';
 
 function AddContact({
   userDetails,
@@ -12,9 +13,8 @@ function AddContact({
   onSetSelectedUser: (user: firebase.firestore.DocumentData) => void;
   onClick: (isModal: boolean) => void;
 }): React.ReactElement {
-  const { id, email } = userDetails;
+  const { email } = userDetails;
   const { currentUser } = useAuth();
-  const userClass = id === currentUser?.uid ? 'added' : 'new';
   const [isModal, setIsModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function AddContact({
 
   return (
     <>
-      <div className={`userDetails ${userClass}`}>
+      <div className='newContact'>
         <div
           onClick={() => {
             onSetSelectedUser(userDetails);

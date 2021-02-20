@@ -1,0 +1,7 @@
+div.newContact {
+    background-color: cadetblue;
+    margin: 0.2rem;
+     &:hover {
+         cursor: pointer;
+     }
+}
