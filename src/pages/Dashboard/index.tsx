@@ -101,7 +101,14 @@ export default function ChatDashboard(): React.ReactElement {
         {existingUsers &&
           existingUsers.map((item: firebase.firestore.DocumentData) => {
             if (item.email !== currentUser?.email) {
-              return <AddContact key={item.id} userDetails={item} onSetSelectedUser={onSetSelectedUser} onClick={handleModal} />;
+              return (
+                <AddContact
+                  key={item.id}
+                  userDetails={item}
+                  onSetSelectedUser={onSetSelectedUser}
+                  onClick={handleModal}
+                />
+              );
             }
           })}
         <button type='button' onClick={() => handleLogout()}>
@@ -138,18 +145,34 @@ function CreateUserModal({
   selectedUser: firebase.firestore.DocumentData | undefined;
 }) {
   const [firstMsg, setFirstMsg] = useState('');
+  const [groups, setGroups] = useState<firebase.firestore.DocumentData>();
+  const userGroup = [currentUser?.uid, selectedUser?.id];
 
   useEffect(() => {
-    const userGroup = [currentUser?.uid, selectedUser?.id];
-    // const groups = firestore.collection('groups').where('members', 'array-contains-any', userGroup).get();
+    const groups = firestore.collection('groups').onSnapshot(snapshot => {
+      const docs: firebase.firestore.DocumentData = [];
+      snapshot.forEach(doc => {
+        docs.push({
+          ...doc.data()
+        });
+      });
+      setGroups(docs);
+    });
 
-    console.log('groupss: ', userGroup);
-  }, [selectedUser]);
+    return groups;
+  }, [selectedUser, currentUser]);
+
+  const isGroup =
+    groups &&
+    groups.map((group: firebase.firestore.DocumentData) => {
+      return userGroup.every(user => group.members?.includes(user));
+    });
+
+  const isGroupExists = isGroup?.includes(true);
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
 
-    // const isGroup;
     const group = createGroup(currentUser?.uid, selectedUser?.id);
     const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
 
@@ -161,11 +184,10 @@ function CreateUserModal({
       .update({
         messages: firebase.firestore.FieldValue.arrayUnion(message.id)
       });
-    // TODO: Check group collection for groups with currentUser and selectedUser and then render list
     setFirstMsg('');
   };
 
-  return isOpen ? (
+  return isOpen && !isGroupExists ? (
     <>
       <div className='modalContainer'>
         {selectedUser?.email}
