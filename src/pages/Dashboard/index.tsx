@@ -5,9 +5,9 @@ import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
-import { createMessage, createGroup } from '../../context/collectionMethods';
+import { createMessage } from '../../context/collectionMethods';
 import { ROUTES } from '../../utils/constants';
-import { MessageBubble, AddContact } from '../../components';
+import { MessageBubble, AddContact, UserModal } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
@@ -117,7 +117,7 @@ export default function ChatDashboard(): React.ReactElement {
         <button type='button' onClick={() => showExistingUsers()}>
           Add contact
         </button>
-        <CreateUserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
+        <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
       </div>
       <ToastContainer
         position='bottom-right'
@@ -133,79 +133,4 @@ export default function ChatDashboard(): React.ReactElement {
       />
     </>
   );
-}
-
-function CreateUserModal({
-  isOpen,
-  currentUser,
-  selectedUser
-}: {
-  isOpen: boolean;
-  currentUser: firebase.User | null;
-  selectedUser: firebase.firestore.DocumentData | undefined;
-}) {
-  const [firstMsg, setFirstMsg] = useState('');
-  const [groups, setGroups] = useState<firebase.firestore.DocumentData>();
-  const userGroup = [currentUser?.uid, selectedUser?.id];
-
-  useEffect(() => {
-    const groups = firestore.collection('groups').onSnapshot(snapshot => {
-      const docs: firebase.firestore.DocumentData = [];
-      snapshot.forEach(doc => {
-        docs.push({
-          ...doc.data()
-        });
-      });
-      setGroups(docs);
-    });
-
-    return groups;
-  }, [selectedUser, currentUser]);
-
-  const isGroup =
-    groups &&
-    groups.map((group: firebase.firestore.DocumentData) => {
-      return userGroup.every(user => group.members?.includes(user));
-    });
-
-  const isGroupExists = isGroup?.includes(true);
-
-  const sendMessage = async (e: any) => {
-    e.preventDefault();
-
-    const group = createGroup(currentUser?.uid, selectedUser?.id);
-    const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
-
-    await firestore.collection('groups').doc(group.id).set(group);
-    await firestore.collection('messages').doc(message.id).set(message);
-    await firestore
-      .collection('groups')
-      .doc(group.id)
-      .update({
-        messages: firebase.firestore.FieldValue.arrayUnion(message.id)
-      });
-    setFirstMsg('');
-  };
-
-  return isOpen && !isGroupExists ? (
-    <>
-      <div className='modalContainer'>
-        {selectedUser?.email}
-        <form onSubmit={sendMessage}>
-          <input
-            type='text'
-            className='messageInput'
-            placeholder='Say hi!'
-            onChange={e => {
-              setFirstMsg(e.target.value);
-            }}
-            value={firstMsg}
-          />
-          <button type='submit' disabled={!firstMsg || firstMsg.trim().length === 0}>
-            Send
-          </button>
-        </form>
-      </div>
-    </>
-  ) : null;
 }
