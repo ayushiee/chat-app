@@ -4,15 +4,14 @@ import firebase from 'firebase';
 import { useAuth } from '../../context/auth';
 import './AddContact.scss';
 
-function AddContact({
-  userDetails,
-  onSetSelectedUser,
-  onClick
-}: {
+interface AddContactProps {
   userDetails: firebase.firestore.DocumentData;
   onSetSelectedUser: (user: firebase.firestore.DocumentData) => void;
   onClick: (isModal: boolean) => void;
-}): React.ReactElement {
+}
+
+function AddContact(props: AddContactProps): React.ReactElement {
+  const { userDetails, onClick, onSetSelectedUser } = props;
   const { email } = userDetails;
   const { currentUser } = useAuth();
   const [isModal, setIsModal] = useState<boolean>(false);
