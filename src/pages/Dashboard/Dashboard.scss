@@ -1,19 +1,61 @@
+@import '../../utils/variables';
+
 div.main {
-    background-color: snow;
+  background-color: $primary-dark;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 2em;
+
+    .leftPanel {
+      background-color: orange;
+      width: 20vw;
+      min-height: 90vh;
+      border-top-left-radius: 0.5em;
+      border-bottom-left-radius: 0.5em;
+
+      .header {
+        margin: 0.7rem 0.5rem;
+        background-color: blanchedalmond;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .iconsRow {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          background-color: blueviolet;
+        }
+      }
+    }
+  }
+
+  .windowPanel {
+    background-color: orchid;
+    width: 50vw;
+    height: 90vh;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
+    border-top-right-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+  }
 
-    .messageInput {
-        padding: 0.2rem;
-        margin: 1rem;
-        outline: none;
-    }
+  .messageInput {
+    padding: 0.2rem;
+    margin: 1rem;
+    outline: none;
+  }
 }
 
 div.modalContainer {
-    border: 1px solid black;
-    padding: 0.5rem;
+  border: 1px solid black;
+  padding: 0.5rem;
 }

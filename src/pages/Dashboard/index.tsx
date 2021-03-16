@@ -82,6 +82,17 @@ export default function ChatDashboard(): React.ReactElement {
   return (
     <>
       <div className='main'>
+        <div className='content'>
+          <div className='leftPanel'>
+            <div className='header'>
+              <h2>Messages</h2>
+              <div className='iconsRow'>a d eee</div>
+            </div>
+          </div>
+        </div>
+        {/* </div> */}
+        <div className='windowPanel'>yee</div>
+        {/*
         <h2>Chat Dashboard</h2>
         <form onSubmit={sendMessage}>
           <input
@@ -117,9 +128,9 @@ export default function ChatDashboard(): React.ReactElement {
         <button type='button' onClick={() => showExistingUsers()}>
           Add contact
         </button>
-        <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
+        <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} /> */}
       </div>
-      <ToastContainer
+      {/* <ToastContainer
         position='bottom-right'
         autoClose={4000}
         transition={Slide}
@@ -130,7 +141,7 @@ export default function ChatDashboard(): React.ReactElement {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />
+      /> */}
     </>
   );
 }
