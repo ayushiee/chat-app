@@ -53,6 +53,20 @@ function UserModal(props: UserModalProps) {
         messages: firebase.firestore.FieldValue.arrayUnion(message.id)
       });
     setFirstMsg('');
+
+    // updating group id at both users
+    await firestore
+      .collection('users')
+      .doc(currentUser?.uid)
+      .update({
+        group: firebase.firestore.FieldValue.arrayUnion(group.id)
+      });
+    await firestore
+      .collection('users')
+      .doc(selectedUser?.id)
+      .update({
+        group: firebase.firestore.FieldValue.arrayUnion(group.id)
+      });
   };
 
   return isOpen && !isGroupExists ? (

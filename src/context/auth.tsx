@@ -40,7 +40,7 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
   };
 
   const sendUser = async (user: firebase.User | null): Promise<void> => {
-    const newUser = createUser(user?.uid, 'abc', user?.email, '111');
+    const newUser = createUser(user?.uid, '', user?.email, '');
     await firestore.collection('users').doc(newUser.id).set(newUser);
   };
 
