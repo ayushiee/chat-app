@@ -1,3 +1,5 @@
+// Methods to create firestore document entries.
+
 import cuid from 'cuid';
 
 import { Users, Groups, Message, UserId, GroupId } from '../utils/types';

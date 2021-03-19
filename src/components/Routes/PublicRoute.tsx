@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import { ROUTES } from '../utils/constants';
-import { useAuth } from '../context/auth';
+import { ROUTES } from '../../utils/constants';
+import { useAuth } from '../../context/auth';
 
 interface PublicRouteProps extends RouteProps {
   restricted?: boolean;

@@ -1,3 +1,5 @@
+// Types for firestore collections. 
+
 export type UserId = string | undefined;
 
 export type GroupId = string | undefined;

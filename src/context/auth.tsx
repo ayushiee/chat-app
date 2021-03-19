@@ -1,3 +1,5 @@
+// Methods for user authentication.
+
 import React, { useContext, useEffect, useState } from 'react';
 import firebase from 'firebase';
 
@@ -39,6 +41,7 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
     return auth.signOut();
   };
 
+  // Checks if user entry exists in collection or not. Creates new entry if user not found. 
   const sendUser = async (user: firebase.User | null): Promise<void> => {
     await firestore
       .collection('users')
