@@ -6,13 +6,14 @@ import { firestore } from '../../utils/firebase';
 
 interface UserCard {
   groupId: any;
-  onSelectGroup: (id: string) => void;
+  onSelectGroup: (id: string, chosenUser: firebase.firestore.DocumentData | undefined) => void;
   currentUser: firebase.User | null;
 }
 
 function UserCard(props: UserCard): React.ReactElement {
   const { groupId, onSelectGroup, currentUser } = props; // getting group id
   const [name, setName] = useState<string>();
+  const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
 
   const getOtherUserId = async (groupId: any) => {
     const snapShot = await firestore.collection('groups').doc(groupId).get();
@@ -21,13 +22,16 @@ function UserCard(props: UserCard): React.ReactElement {
     const id = userId.toString();
 
     const userSnap = await (await firestore.collection('users').doc(id).get()).data();
-    return userSnap?.email;
+    return userSnap;
   };
 
-  getOtherUserId(groupId).then(item => setName(item));
+  getOtherUserId(groupId).then(item => {
+    setName(item?.email);
+    setUserSelect(item);
+  });
 
   return (
-    <div className='userContainer' onClick={() => onSelectGroup(groupId)}>
+    <div className='userContainer' onClick={() => onSelectGroup(groupId, userSelect)}>
       <div className='name'>{name}</div>
     </div>
   );

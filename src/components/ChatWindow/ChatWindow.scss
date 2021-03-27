@@ -1,0 +1,42 @@
+@import '../../utils/variables';
+
+.chatContainer {
+  background-color: pink;
+  width: 80vw;
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+
+  .userInfo {
+    background-color: blue;
+    padding: 0.5rem;
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #d8d7d7;
+  }
+
+  .texts {
+    padding: 0.9em 1.5em;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: auto;
+    background-color: rebeccapurple;  
+  }
+
+  .inputTexts {
+      background-color: rosybrown;
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-end;
+    align-self: flex-end;
+    // position: absolute;
+    // bottom: 0;
+  }
+  
+}

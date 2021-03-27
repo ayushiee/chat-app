@@ -10,9 +10,9 @@ div.main {
 
   .content {
     display: flex;
-    width: fit-content;
+    width: 80vw;
     height: fit-content;
-    border-radius: 2em;
+    border-radius: 0.5em;
 
     .leftPanel {
       background-color: $white;

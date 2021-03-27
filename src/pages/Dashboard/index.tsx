@@ -5,9 +5,8 @@ import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
-import { createMessage } from '../../context/collectionMethods';
 import { ROUTES } from '../../utils/constants';
-import { MessageBubble, AddContact, UserModal } from '../../components';
+import { MessageBubble, AddContact, UserModal, ChatWindow } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
@@ -16,21 +15,21 @@ import UserCard from '../../components/UserCard';
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
-  const [msg, setMsg] = useState('');
-  const [text, setText] = useState<firebase.firestore.DocumentData>([]);
   const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
   const [user, setUser] = useState<firebase.firestore.DocumentData | undefined>();
   const [userGroup, setUserGroup] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState<string>();
+  const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
 
   const onSetSelectedUser = async (newUser: firebase.firestore.DocumentData) => {
     setSelectedUser(newUser);
   };
 
-  const onSelectGroup = (id: string) => {
+  const onSelectGroup = (id: string, userSelect: firebase.firestore.DocumentData | undefined) => {
     setSelectedGroup(id);
+    setUserSelect(userSelect);
   };
 
   const handleModal = (isOpen: boolean) => {
@@ -59,38 +58,10 @@ export default function ChatDashboard(): React.ReactElement {
     });
   };
 
-  const sendMessage = async (e: any) => {
-    e.preventDefault();
-
-    const message = createMessage(msg.trim(), currentUser?.uid, '12355');
-
-    await firestore.collection('messages').doc(message.id).set(message);
-
-    setMsg('');
-  };
-
   const getUser = async (id: string | undefined) => {
     const snapshot = await firestore.collection('users').doc(id).get();
     return snapshot.data();
   };
-
-  useEffect(() => {
-    const message = firestore
-      .collection('messages')
-      .orderBy('createdAt', 'asc')
-      .limit(25)
-      .onSnapshot(snapshot => {
-        const docs: firebase.firestore.DocumentData = [];
-        snapshot.forEach(doc => {
-          docs.push({
-            ...doc.data()
-          });
-        });
-        setText(docs);
-      });
-
-    return message;
-  }, []);
 
   useEffect(() => {
     getUser(currentUser?.uid).then(user => {
@@ -112,24 +83,16 @@ export default function ChatDashboard(): React.ReactElement {
               {userGroup &&
                 userGroup.map((item: any, index) => {
                   if (item.length !== 0) {
-                    // TODO: Then fetch msgs between them by fetching msg id from groups.msgs[] and then fetch msg text through ids.
-                    return (
-                      <UserCard
-                        key={index}
-                        groupId={item}
-                        onSelectGroup={onSelectGroup}
-                        currentUser={user?.id}
-                      />
-                    );
+                    return <UserCard key={index} groupId={item} onSelectGroup={onSelectGroup} currentUser={user?.id} />;
                   }
                 })}
             </div>
           </div>
+          <ChatWindow activeUser={userSelect} />
         </div>
         {/* </div> */}
-        <div className='windowPanel'>
-          yee
-          <h2>Chat Dashboard</h2>
+        {/* <div className='windowPanel'> */}
+        {/* <h2>Chat Dashboard</h2>
           <form onSubmit={sendMessage}>
             <input
               type='text'
@@ -164,8 +127,8 @@ export default function ChatDashboard(): React.ReactElement {
           <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
           <button type='button' onClick={() => handleLogout()}>
             Log out
-          </button>
-        </div>
+          </button> */}
+        {/* </div> */}
       </div>
       {/* <ToastContainer
         position='bottom-right'

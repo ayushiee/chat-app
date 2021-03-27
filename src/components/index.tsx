@@ -4,5 +4,6 @@ import MessageBubble from './MessageBubble';
 import AddContact from './AddContact';
 import UserModal from './UserModal';
 import UserCard from './UserCard';
+import ChatWindow from './ChatWindow';
 
-export { PrivateRoute, PublicRoute, MessageBubble, AddContact, UserModal, UserCard };
+export { PrivateRoute, PublicRoute, MessageBubble, AddContact, UserModal, UserCard, ChatWindow };
