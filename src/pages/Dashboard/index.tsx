@@ -11,6 +11,7 @@ import { MessageBubble, AddContact, UserModal } from '../../components';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
+import UserCard from '../../components/UserCard';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
@@ -20,9 +21,16 @@ export default function ChatDashboard(): React.ReactElement {
   const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
+  const [user, setUser] = useState<firebase.firestore.DocumentData | undefined>();
+  const [userGroup, setUserGroup] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState<string>();
 
   const onSetSelectedUser = async (newUser: firebase.firestore.DocumentData) => {
     setSelectedUser(newUser);
+  };
+
+  const onSelectGroup = (id: string) => {
+    setSelectedGroup(id);
   };
 
   const handleModal = (isOpen: boolean) => {
@@ -61,6 +69,11 @@ export default function ChatDashboard(): React.ReactElement {
     setMsg('');
   };
 
+  const getUser = async (id: string | undefined) => {
+    const snapshot = await firestore.collection('users').doc(id).get();
+    return snapshot.data();
+  };
+
   useEffect(() => {
     const message = firestore
       .collection('messages')
@@ -79,6 +92,13 @@ export default function ChatDashboard(): React.ReactElement {
     return message;
   }, []);
 
+  useEffect(() => {
+    getUser(currentUser?.uid).then(user => {
+      setUser(user);
+      setUserGroup(user?.group);
+    });
+  }, [user]);
+
   return (
     <>
       <div className='main'>
@@ -88,47 +108,64 @@ export default function ChatDashboard(): React.ReactElement {
               <h2>Messages</h2>
               <div className='iconsRow'>a d eee</div>
             </div>
+            <div>
+              {userGroup &&
+                userGroup.map((item: any, index) => {
+                  if (item.length !== 0) {
+                    // TODO: Then fetch msgs between them by fetching msg id from groups.msgs[] and then fetch msg text through ids.
+                    return (
+                      <UserCard
+                        key={index}
+                        groupId={item}
+                        onSelectGroup={onSelectGroup}
+                        currentUser={user?.id}
+                      />
+                    );
+                  }
+                })}
+            </div>
           </div>
         </div>
         {/* </div> */}
-        <div className='windowPanel'>yee</div>
-        {/*
-        <h2>Chat Dashboard</h2>
-        <form onSubmit={sendMessage}>
-          <input
-            type='text'
-            className='messageInput'
-            placeholder='Type your message here'
-            onChange={e => {
-              setMsg(e.target.value);
-            }}
-            value={msg}
-          />
-          <button type='submit' disabled={!msg || msg.trim().length === 0}>
-            Send
+        <div className='windowPanel'>
+          yee
+          <h2>Chat Dashboard</h2>
+          <form onSubmit={sendMessage}>
+            <input
+              type='text'
+              className='messageInput'
+              placeholder='Type your message here'
+              onChange={e => {
+                setMsg(e.target.value);
+              }}
+              value={msg}
+            />
+            <button type='submit' disabled={!msg || msg.trim().length === 0}>
+              Send
+            </button>
+          </form>
+          {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
+          {existingUsers &&
+            existingUsers.map((item: firebase.firestore.DocumentData) => {
+              if (item.email !== currentUser?.email) {
+                return (
+                  <AddContact
+                    key={item.id}
+                    userDetails={item}
+                    onSetSelectedUser={onSetSelectedUser}
+                    onClick={handleModal}
+                  />
+                );
+              }
+            })}
+          <button type='button' onClick={() => showExistingUsers()}>
+            Add contact
           </button>
-        </form>
-        {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
-        {existingUsers &&
-          existingUsers.map((item: firebase.firestore.DocumentData) => {
-            if (item.email !== currentUser?.email) {
-              return (
-                <AddContact
-                  key={item.id}
-                  userDetails={item}
-                  onSetSelectedUser={onSetSelectedUser}
-                  onClick={handleModal}
-                />
-              );
-            }
-          })}
-        <button type='button' onClick={() => handleLogout()}>
-          Log out
-        </button>
-        <button type='button' onClick={() => showExistingUsers()}>
-          Add contact
-        </button>
-        <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} /> */}
+          <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
+          <button type='button' onClick={() => handleLogout()}>
+            Log out
+          </button>
+        </div>
       </div>
       {/* <ToastContainer
         position='bottom-right'

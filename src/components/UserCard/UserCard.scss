@@ -1,0 +1,12 @@
+.userContainer {
+    background-color: blanchedalmond;
+    margin: 0.2rem 0.5rem;
+    overflow: hidden;
+    padding: 0.2rem 0.5rem;
+    transition: linear 200ms;
+    
+    &:hover{
+        cursor: pointer;
+        transform: translateY(-2px);
+    }
+}
