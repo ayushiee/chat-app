@@ -15,11 +15,12 @@ div.main {
     border-radius: 2em;
 
     .leftPanel {
-      background-color: orange;
+      background-color: $white;
       width: 20vw;
       min-height: 90vh;
       border-top-left-radius: 0.5em;
       border-bottom-left-radius: 0.5em;
+      padding: 0.5rem;
 
       .header {
         margin: 0.7rem 0.5rem;
@@ -32,7 +33,6 @@ div.main {
           display: flex;
           flex-direction: row;
           align-items: center;
-          background-color: blueviolet;
         }
       }
     }
@@ -42,6 +42,7 @@ div.main {
     background-color: orchid;
     width: 50vw;
     height: 90vh;
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     border-top-right-radius: 0.5em;

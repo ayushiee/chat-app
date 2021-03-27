@@ -105,8 +105,8 @@ export default function ChatDashboard(): React.ReactElement {
         <div className='content'>
           <div className='leftPanel'>
             <div className='header'>
-              <h2>Messages</h2>
-              <div className='iconsRow'>a d eee</div>
+              <h1>Messages</h1>
+              {/* <div className='iconsRow'>a d eee</div> */}
             </div>
             <div>
               {userGroup &&
