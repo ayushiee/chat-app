@@ -1,7 +1,7 @@
 @import '../../utils/variables';
 
 .chatContainer {
-  background-color: pink;
+  background-color: $light;
   width: 80vw;
   border-top-right-radius: 0.5em;
   border-bottom-right-radius: 0.5em;
@@ -10,7 +10,6 @@
   flex-direction: column;
 
   .userInfo {
-    background-color: blue;
     padding: 0.5rem;
     height: 4rem;
     display: flex;
@@ -26,17 +25,35 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
-    background-color: rebeccapurple;  
+    background-color: rebeccapurple;
   }
 
   .inputTexts {
-      background-color: rosybrown;
+    background-color: rosybrown;
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
     justify-self: flex-end;
     align-self: flex-end;
     // position: absolute;
     // bottom: 0;
   }
-  
+}
+
+.noChat {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-self: center;
+  align-items: center;
+  width: 50vw;
+  height: 75vh;
+  margin-top: 3.5em;
+  color: $primary-dark;
+
+  .altImage {
+    object-fit: contain;
+    overflow: hidden;
+    width: 50vw;
+    height: 75vh;
+  }
 }
