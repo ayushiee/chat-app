@@ -5,12 +5,17 @@
   width: 80vw;
   border-top-right-radius: 0.5em;
   border-bottom-right-radius: 0.5em;
-  padding: 0.5rem;
   display: flex;
   flex-direction: column;
 
+  .chatWindow {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+
   .userInfo {
-    padding: 0.5rem;
+    padding: 0.7rem;
     height: 4rem;
     display: flex;
     flex-direction: row;
@@ -25,17 +30,53 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
-    background-color: rebeccapurple;
+    // background-color: rebeccapurple;
   }
 
-  .inputTexts {
-    background-color: rosybrown;
-    display: flex;
-    // flex-direction: column;
+  .inputContainer {
+    justify-content: space-between;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
     justify-self: flex-end;
-    align-self: flex-end;
-    // position: absolute;
-    // bottom: 0;
+    margin-top: 0.5em;
+    padding: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    border-top: 1px solid #d6d3d3;
+
+    .messageInput {
+      outline: none;
+      border-top-width: 0;
+      border-right-width: 0;
+      border-left-width: 0;
+      border-bottom-width: 0.4px;
+      border-bottom-color: lightgray;
+      padding: 0.4rem 0.6rem;
+      background-color: transparent;
+      flex: 1;
+      max-width: 90%;
+      min-width: 80%;
+      min-height: 25px;
+      max-height: 100px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      cursor: text;
+    }
+
+    .sendButton {
+      // background-color: teal;
+      border: none;
+      text-align: center;
+      outline: none;
+      transition: linear 200ms;
+      flex: 1;
+      border-radius: 2px;
+
+      &:hover {
+        cursor: pointer;
+        transform: translateY(-4px);
+      }
+    }
   }
 }
 

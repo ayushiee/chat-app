@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
+import { IoIosSend } from 'react-icons/io';
 
 import { createMessage } from '../../context/collectionMethods';
 import { firestore } from '../../utils/firebase';
@@ -19,17 +20,23 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
   const { currentUser } = useAuth();
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
-  console.log(activeGroup);
   // TODO: Then fetch msgs between them by fetching msg id from groups.msgs[] and then fetch msg text through ids.
 
   const sendMessage = async (e: any) => {
+    console.log('begin');
     e.preventDefault();
 
     const message = createMessage(msg.trim(), currentUser?.uid, activeGroup);
 
     await firestore.collection('messages').doc(message.id).set(message);
-
+    await firestore
+      .collection('groups')
+      .doc(activeGroup)
+      .update({
+        messages: firebase.firestore.FieldValue.arrayUnion(message.id)
+      });
     setMsg('');
+    console.log('end');
   };
 
   useEffect(() => {
@@ -55,33 +62,29 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
       {activeUser ? (
         <>
           {' '}
-          <div className='userInfo'>
-            <h2>{activeUser?.email}</h2>
-            <h2>hehehh</h2>
-          </div>
-          <div>
+          <div className='chatWindow'>
+            <div className='userInfo'>
+              <h2>{activeUser?.email}</h2>
+              <h2>hehehh</h2>
+            </div>
             <div className='texts'>
               {text &&
                 text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
             </div>
-            <div className='inputTexts'>
-              <form onSubmit={sendMessage}>
-                <input
-                  type='text'
-                  className='messageInput'
-                  placeholder='Type your message here'
-                  onChange={e => {
-                    setMsg(e.target.value);
-                  }}
-                  value={msg}
-                />
-                <button type='submit' disabled={!msg || msg.trim().length === 0}>
-                  Send
-                </button>
-              </form>
-
-              {/* <MessageInput onSend={onSend} /> */}
-            </div>
+            <form onSubmit={sendMessage} className='inputContainer'>
+              <input
+                type='text'
+                className='messageInput'
+                placeholder='Type your message here'
+                onChange={e => {
+                  setMsg(e.target.value);
+                }}
+                value={msg}
+              />
+              <button type='submit' disabled={!msg || msg.trim().length === 0} className='sendButton'>
+                <IoIosSend size={30} color='#191970' />
+              </button>
+            </form>
           </div>
         </>
       ) : (
