@@ -76,7 +76,7 @@ export default function ChatDashboard(): React.ReactElement {
         <div className='content'>
           <div className='leftPanel'>
             <div className='header'>
-              <h1>Messages</h1>
+              <h2>Messages</h2>
               {/* <div className='iconsRow'>a d eee</div> */}
             </div>
             <div>
@@ -88,7 +88,7 @@ export default function ChatDashboard(): React.ReactElement {
                 })}
             </div>
           </div>
-          <ChatWindow activeUser={userSelect} />
+          <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
         </div>
         {/* </div> */}
         {/* <div className='windowPanel'> */}
