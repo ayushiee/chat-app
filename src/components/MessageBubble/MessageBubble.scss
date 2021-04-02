@@ -1,0 +1,22 @@
+@import '../../utils/variables';
+
+.sentBubble {
+    width: fit-content;
+    height: fit-content;
+    background-color: $secondary-light;
+    padding: 0.55rem;
+    border-radius: 0.8em;
+    border-top-right-radius: 0;
+    align-self: flex-end;
+    margin: 0.2em 0;
+}
+.receivedBubble {
+    width: fit-content;
+    height: fit-content;
+    background-color: $white;
+    padding: 0.55rem;
+    border-radius: 0.8em;
+    border-top-left-radius: 0;
+    align-self: flex-start;
+    margin: 0.2em 0;
+}
