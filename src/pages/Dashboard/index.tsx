@@ -11,7 +11,7 @@ import { MessageBubble, AddContact, UserModal, ChatWindow } from '../../componen
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
 import UserCard from '../../components/UserCard';
-import { IoAdd, IoReload } from 'react-icons/io5';
+import { IoAdd, IoExit, IoExitOutline, IoReload } from 'react-icons/io5';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
@@ -79,10 +79,9 @@ export default function ChatDashboard(): React.ReactElement {
             <div className='header'>
               <h2>Messages</h2>
               <div className='iconsRow'>
-                <IoReload size={22} color='#191970' className='icon' />
-
                 {/* TODO: Add contact functionality here */}
                 <IoAdd size={24} color='#191970' className='icon' />
+                <IoExit size={22} color='#191970' className='icon' onClick={() => handleLogout()} />
               </div>
             </div>
             <div>
@@ -96,24 +95,7 @@ export default function ChatDashboard(): React.ReactElement {
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
         </div>
-        {/* </div> */}
-        {/* <div className='windowPanel'> */}
-        {/* <h2>Chat Dashboard</h2>
-          <form onSubmit={sendMessage}>
-            <input
-              type='text'
-              className='messageInput'
-              placeholder='Type your message here'
-              onChange={e => {
-                setMsg(e.target.value);
-              }}
-              value={msg}
-            />
-            <button type='submit' disabled={!msg || msg.trim().length === 0}>
-              Send
-            </button>
-          </form>
-          {text && text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
+        {/* 
           {existingUsers &&
             existingUsers.map((item: firebase.firestore.DocumentData) => {
               if (item.email !== currentUser?.email) {
@@ -131,9 +113,6 @@ export default function ChatDashboard(): React.ReactElement {
             Add contact
           </button>
           <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
-          <button type='button' onClick={() => handleLogout()}>
-            Log out
-          </button> */}
         {/* </div> */}
       </div>
       {/* <ToastContainer
