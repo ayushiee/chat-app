@@ -32,6 +32,7 @@ function UserCard(props: UserCard): React.ReactElement {
 
   return (
     <div className='userContainer' onClick={() => onSelectGroup(groupId, userSelect)}>
+      <div className='avatar'>{name?.charAt(0)}</div>
       <div className='name'>{name}</div>
     </div>
   );
