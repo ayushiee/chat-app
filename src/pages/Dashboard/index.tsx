@@ -11,6 +11,7 @@ import { MessageBubble, AddContact, UserModal, ChatWindow } from '../../componen
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
 import UserCard from '../../components/UserCard';
+import { IoAdd, IoReload } from 'react-icons/io5';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
@@ -77,7 +78,12 @@ export default function ChatDashboard(): React.ReactElement {
           <div className='leftPanel'>
             <div className='header'>
               <h2>Messages</h2>
-              {/* <div className='iconsRow'>a d eee</div> */}
+              <div className='iconsRow'>
+                <IoReload size={22} color='#191970' className='icon' />
+
+                {/* TODO: Add contact functionality here */}
+                <IoAdd size={24} color='#191970' className='icon' />
+              </div>
             </div>
             <div>
               {userGroup &&

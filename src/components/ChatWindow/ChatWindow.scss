@@ -21,7 +21,40 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #d8d7d7;
+    border-bottom: 1px solid $grey-light;
+
+    .icon {
+      margin-right: 0.7rem;
+      transition: linear 200ms;
+      
+      &:hover {
+        cursor: pointer;
+        transform: translateY(-3px);
+      }
+    }
+
+    .userDetails {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.4rem;
+
+      .avatar {
+        background-color: $avatar;
+        color: $white;
+        font-size: 1.5rem;
+        height: 2rem;
+        width: 2rem;
+        border-radius: 2rem;
+        padding: 0.5rem;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0.7rem;
+      }
+    }
   }
 
   .texts {
@@ -42,7 +75,7 @@
     margin-top: 0.5em;
     padding: 0.5em;
     border-bottom-right-radius: 0.5em;
-    border-top: 1px solid #d6d3d3;
+    border-top: 1px solid $grey-light;
 
     .messageInput {
       outline: none;
@@ -50,7 +83,7 @@
       border-right-width: 0;
       border-left-width: 0;
       border-bottom-width: 0.4px;
-      border-bottom-color: lightgray;
+      border-bottom-color: $grey-light;
       padding: 0.4rem 0.6rem;
       background-color: transparent;
       flex: 1;
@@ -64,7 +97,7 @@
     }
 
     .sendButton {
-      // background-color: teal;
+      background-color: transparent;
       border: none;
       text-align: center;
       outline: none;

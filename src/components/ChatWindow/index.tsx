@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
-import { IoIosSend } from 'react-icons/io';
+import { IoIosSend, IoIosCall, IoIosVideocam, IoMdMore } from 'react-icons/io';
 
 import { createMessage } from '../../context/collectionMethods';
 import { firestore } from '../../utils/firebase';
@@ -20,6 +20,7 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
   const { currentUser } = useAuth();
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
+  const [currentGroup, setCurrentGroup] = useState(activeGroup);
   // TODO: Then fetch msgs between them by fetching msg id from groups.msgs[] and then fetch msg text through ids.
 
   const sendMessage = async (e: any) => {
@@ -42,6 +43,7 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
   useEffect(() => {
     const message = firestore
       .collection('messages')
+      // .where('groupId', '==', currentGroup)
       .orderBy('createdAt', 'asc')
       .limit(25)
       .onSnapshot(snapshot => {
@@ -64,11 +66,19 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
           {' '}
           <div className='chatWindow'>
             <div className='userInfo'>
-              <h2>{activeUser?.email}</h2>
-              <h2>hehehh</h2>
+              <div className='userDetails'>
+                <div className='avatar'>{activeUser?.email.charAt(0)}</div>
+                <h2>{activeUser?.email}</h2>
+              </div>
+              <div>
+                <IoIosVideocam size={25} color='#191970' className='icon' />
+                <IoIosCall size={25} color='#191970' className='icon' />
+                <IoMdMore size={25} color='#191970' className='icon' />
+              </div>
             </div>
             <div className='texts'>
               {text &&
+                activeGroup &&
                 text.map((item: firebase.firestore.DocumentData) => <MessageBubble key={item.id} message={item} />)}
             </div>
             <form onSubmit={sendMessage} className='inputContainer'>

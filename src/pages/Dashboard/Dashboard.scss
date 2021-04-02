@@ -20,11 +20,10 @@ div.main {
       min-height: 90vh;
       border-top-left-radius: 0.5em;
       border-bottom-left-radius: 0.5em;
-      padding: 0.5rem;
+      padding: 0.5rem 0 0.5rem 0.5rem;
 
       .header {
         margin: 0.7rem 0.5rem;
-        background-color: blanchedalmond;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -33,13 +32,22 @@ div.main {
           display: flex;
           flex-direction: row;
           align-items: center;
+
+          .icon {
+            margin-left: 0.3rem;
+            transition: linear 200ms;
+
+            &:hover {
+              cursor: pointer;
+              transform: translateY(-3px);
+            }
+          }
         }
       }
     }
   }
 
   .windowPanel {
-    background-color: orchid;
     width: 50vw;
     height: 90vh;
     padding: 0.5rem;
