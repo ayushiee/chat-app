@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { createMessage, createGroup } from '../../context/collectionMethods';
+import { IoIosSend } from 'react-icons/io';
+
+import './UserModal.scss';
 
 interface UserModalProps {
   isOpen: boolean;
@@ -13,30 +16,6 @@ interface UserModalProps {
 function UserModal(props: UserModalProps) {
   const { isOpen, currentUser, selectedUser } = props;
   const [firstMsg, setFirstMsg] = useState('');
-  const [groups, setGroups] = useState<firebase.firestore.DocumentData>();
-  const userGroup = [currentUser?.uid, selectedUser?.id];
-
-  useEffect(() => {
-    const groups = firestore.collection('groups').onSnapshot(snapshot => {
-      const docs: firebase.firestore.DocumentData = [];
-      snapshot.forEach(doc => {
-        docs.push({
-          ...doc.data()
-        });
-      });
-      setGroups(docs);
-    });
-
-    return groups;
-  }, [selectedUser, currentUser]);
-
-  const isGroup =
-    groups &&
-    groups.map((group: firebase.firestore.DocumentData) => {
-      return userGroup.every(user => group.members?.includes(user));
-    });
-
-  const isGroupExists = isGroup?.includes(true);
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
@@ -69,25 +48,22 @@ function UserModal(props: UserModalProps) {
       });
   };
 
-  return isOpen && !isGroupExists ? (
+  return isOpen ? (
     <>
-      <div className='modalContainer'>
-        {selectedUser?.email}
-        <form onSubmit={sendMessage}>
-          <input
-            type='text'
-            className='messageInput'
-            placeholder='Say hi!'
-            onChange={e => {
-              setFirstMsg(e.target.value);
-            }}
-            value={firstMsg}
-          />
-          <button type='submit' disabled={!firstMsg || firstMsg.trim().length === 0}>
-            Send
-          </button>
-        </form>
-      </div>
+      <form onSubmit={sendMessage} className='modalContainer'>
+        <input
+          type='text'
+          className='messageInput'
+          placeholder='Say hi!'
+          onChange={e => {
+            setFirstMsg(e.target.value);
+          }}
+          value={firstMsg}
+        />
+        <button type='submit' disabled={!firstMsg || firstMsg.trim().length === 0} className='button'>
+          <IoIosSend size={20} color='#191970' />
+        </button>
+      </form>
     </>
   ) : null;
 }

@@ -1,0 +1,30 @@
+@import '../../utils/variables';
+
+.modalContainer {
+  align-self: center;
+  padding: 0.1rem;
+  overflow: hidden;
+  align-items: center;
+  margin-left: 1.5rem;
+
+  .messageInput {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    width: 40%;
+    border-bottom: 1px solid $grey-light;
+  }
+
+  .button {
+    background-color: transparent;
+    border: none;
+    text-align: end;
+    outline: none;
+    transition: linear 200ms;
+
+    &:hover {
+      cursor: pointer;
+      transform: translateY(-3px);
+    }
+  }
+}

@@ -119,7 +119,7 @@ export default function ChatDashboard(): React.ReactElement {
                       );
                     }
                   })}
-              <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
+              {/* <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} /> */}
             </div>
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
