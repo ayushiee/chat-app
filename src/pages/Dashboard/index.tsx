@@ -34,9 +34,9 @@ export default function ChatDashboard(): React.ReactElement {
     setUserSelect(userSelect);
   };
 
-  const handleModal = (isOpen: boolean) => {
-    setIsModal(isOpen);
-  };
+  // const handleModal = (isOpen: boolean) => {
+  //   setIsModal(isOpen);
+  // };
 
   const handleLogout = async () => {
     try {
@@ -106,7 +106,7 @@ export default function ChatDashboard(): React.ReactElement {
                           key={item.id}
                           userDetails={item}
                           onSetSelectedUser={onSetSelectedUser}
-                          onClick={handleModal}
+                          // onClick={handleModal}
                         />
                       );
                     }

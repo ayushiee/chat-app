@@ -9,18 +9,16 @@ import { UserModal } from '..';
 interface AddContactProps {
   userDetails: firebase.firestore.DocumentData;
   onSetSelectedUser: (user: firebase.firestore.DocumentData) => void;
-  onClick: (isModal: boolean) => void;
+  // onClick: (isModal: boolean) => void;
 }
 
 function AddContact(props: AddContactProps): React.ReactElement {
-  const { userDetails, onClick, onSetSelectedUser } = props;
+  const { userDetails } = props;
   const { email } = userDetails;
   const { currentUser } = useAuth();
   const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
   const [isModal, setIsModal] = useState<boolean>(false);
   const [groups, setGroups] = useState<firebase.firestore.DocumentData>();
-  console.log('eeee: ', userDetails);
-  // const userGroup = [currentUser?.uid, selectedUser?.id];
   const userGroup = [currentUser?.uid, userDetails?.id];
 
   useEffect(() => {
@@ -45,22 +43,14 @@ function AddContact(props: AddContactProps): React.ReactElement {
 
   const isGroupExists = isGroup?.includes(true);
 
-  // useEffect(() => {
-  //   onClick(isModal);
-  // }, [isModal]);
-
   return (
     <>
       {!isGroupExists && (
         <div
-          className='newUserContainer'
-          onClick={() => {
-            // onSetSelectedUser(userDetails);
-            setSelectedUser(userDetails);
-            setIsModal(!isModal);
-          }}
+          className={selectedUser?.id === userDetails?.id && isModal ? 'selectedUserContainer' : 'newUserContainer'}
+          onClick={() => setSelectedUser(userDetails)}
         >
-          <div className='title'>
+          <div className='title' onClick={() => setIsModal(!isModal)}>
             <div className='avatarNew'>{email?.charAt(0)}</div>
             <div className='email'>{email}</div>
           </div>
