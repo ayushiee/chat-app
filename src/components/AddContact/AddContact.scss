@@ -1,7 +1,37 @@
-div.newContact {
-    background-color: cadetblue;
-    margin: 0.2rem;
-     &:hover {
-         cursor: pointer;
-     }
+@import '../../utils/variables';
+
+.userContainer {
+  margin: 0.2rem 0.5rem;
+  margin-right: 0;
+  overflow: hidden;
+  padding: 0.7rem 0.5rem;
+  transition: linear 200ms;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-top-left-radius: 2rem;
+  border-bottom-left-radius: 2rem;
+
+  &:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    background-color: $light;
+  }
+
+  .avatarNew {
+    background-color: $avatar-light;
+    color: $white;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 1.5rem;
+    padding: 0.4rem;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+  }
+  .name {
+    font-weight: 600;
+  }
 }

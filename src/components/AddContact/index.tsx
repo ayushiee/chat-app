@@ -22,15 +22,14 @@ function AddContact(props: AddContactProps): React.ReactElement {
 
   return (
     <>
-      <div className='newContact'>
-        <div
-          onClick={() => {
-            onSetSelectedUser(userDetails);
-            setIsModal(!isModal);
-          }}
-        >
-          {email}
-        </div>
+      <div
+        className='userContainer'
+        onClick={() => {
+          onSetSelectedUser(userDetails);
+          setIsModal(!isModal);
+        }}>
+        <div className='avatarNew'>{email?.charAt(0)}</div>
+        <div className='email'>{email}</div>
       </div>
     </>
   );

@@ -11,11 +11,12 @@ import { MessageBubble, AddContact, UserModal, ChatWindow } from '../../componen
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
 import UserCard from '../../components/UserCard';
-import { IoAdd, IoExit, IoExitOutline, IoReload } from 'react-icons/io5';
+import { IoAddOutline, IoExit, IoClose } from 'react-icons/io5';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
+  const [isAddUser, setIsAddUser] = useState<boolean>(false);
   const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
@@ -77,45 +78,53 @@ export default function ChatDashboard(): React.ReactElement {
         <div className='content'>
           <div className='leftPanel'>
             <div className='header'>
-              <h2>Messages</h2>
+              <h2>{isAddUser ? 'Add User' : 'Messages'}</h2>
               <div className='iconsRow'>
-                {/* TODO: Add contact functionality here */}
-                <IoAdd size={24} color='#191970' className='icon' />
+                {isAddUser ? (
+                  <IoClose size={24} color='#191970' className='icon' onClick={() => setIsAddUser(!isAddUser)} />
+                ) : (
+                  <IoAddOutline
+                    size={24}
+                    color='#191970'
+                    className='icon'
+                    onClick={() => {
+                      setIsAddUser(!isAddUser);
+                      showExistingUsers();
+                    }}
+                  />
+                )}
                 <IoExit size={22} color='#191970' className='icon' onClick={() => handleLogout()} />
               </div>
             </div>
             <div>
-              {userGroup &&
-                userGroup.map((item: any, index) => {
-                  if (item.length !== 0) {
-                    return <UserCard key={index} groupId={item} onSelectGroup={onSelectGroup} currentUser={user?.id} />;
-                  }
-                })}
+              {isAddUser
+                ? existingUsers &&
+                  existingUsers.map((item: firebase.firestore.DocumentData) => {
+                    if (item.email !== currentUser?.email) {
+                      return (
+                        <AddContact
+                          key={item.id}
+                          userDetails={item}
+                          onSetSelectedUser={onSetSelectedUser}
+                          onClick={handleModal}
+                        />
+                      );
+                    }
+                  })
+                : userGroup &&
+                  userGroup.map((item: any, index) => {
+                    if (item.length !== 0) {
+                      return (
+                        <UserCard key={index} groupId={item} onSelectGroup={onSelectGroup} currentUser={user?.id} />
+                      );
+                    }
+                  })}
+              <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
             </div>
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
         </div>
-        {/* 
-          {existingUsers &&
-            existingUsers.map((item: firebase.firestore.DocumentData) => {
-              if (item.email !== currentUser?.email) {
-                return (
-                  <AddContact
-                    key={item.id}
-                    userDetails={item}
-                    onSetSelectedUser={onSetSelectedUser}
-                    onClick={handleModal}
-                  />
-                );
-              }
-            })}
-          <button type='button' onClick={() => showExistingUsers()}>
-            Add contact
-          </button>
-          <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
-        {/* </div> */}
-      </div>
-      {/* <ToastContainer
+        {/* <ToastContainer
         position='bottom-right'
         autoClose={4000}
         transition={Slide}
@@ -127,6 +136,7 @@ export default function ChatDashboard(): React.ReactElement {
         draggable
         pauseOnHover
       /> */}
+      </div>
     </>
   );
 }

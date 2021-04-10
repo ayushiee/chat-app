@@ -37,7 +37,6 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
         messages: firebase.firestore.FieldValue.arrayUnion(message.id)
       });
     setMsg('');
-    console.log('end');
   };
 
   useEffect(() => {
