@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import firebase from 'firebase';
+import { IoIosSend } from 'react-icons/io';
 
 import { firestore } from '../../utils/firebase';
 import { createMessage, createGroup } from '../../context/collectionMethods';
-import { IoIosSend } from 'react-icons/io';
 
 import './UserModal.scss';
 

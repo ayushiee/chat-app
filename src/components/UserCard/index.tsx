@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import firebase from 'firebase';
 
-import './UserCard.scss';
 import { firestore } from '../../utils/firebase';
+
+import './UserCard.scss';
 
 interface UserCard {
   groupId: any;

@@ -2,41 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast, ToastContainer, Slide } from 'react-toastify';
 import firebase from 'firebase';
+import { IoAddOutline, IoExit, IoClose } from 'react-icons/io5';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
 import { ROUTES } from '../../utils/constants';
-import { MessageBubble, AddContact, UserModal, ChatWindow } from '../../components';
+import { AddContact, ChatWindow } from '../../components';
+import UserCard from '../../components/UserCard';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Dashboard.scss';
-import UserCard from '../../components/UserCard';
-import { IoAddOutline, IoExit, IoClose } from 'react-icons/io5';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
   const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
-  const [isModal, setIsModal] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<firebase.firestore.DocumentData>();
   const [user, setUser] = useState<firebase.firestore.DocumentData | undefined>();
   const [userGroup, setUserGroup] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState<string>();
   const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
 
-  const onSetSelectedUser = async (newUser: firebase.firestore.DocumentData) => {
-    setSelectedUser(newUser);
-  };
-
   const onSelectGroup = (id: string, userSelect: firebase.firestore.DocumentData | undefined) => {
     setSelectedGroup(id);
     setUserSelect(userSelect);
   };
-
-  // const handleModal = (isOpen: boolean) => {
-  //   setIsModal(isOpen);
-  // };
 
   const handleLogout = async () => {
     try {
@@ -101,14 +91,7 @@ export default function ChatDashboard(): React.ReactElement {
                 ? existingUsers &&
                   existingUsers.map((item: firebase.firestore.DocumentData) => {
                     if (item.email !== currentUser?.email) {
-                      return (
-                        <AddContact
-                          key={item.id}
-                          userDetails={item}
-                          onSetSelectedUser={onSetSelectedUser}
-                          // onClick={handleModal}
-                        />
-                      );
+                      return <AddContact key={item.id} userDetails={item} />;
                     }
                   })
                 : userGroup &&
@@ -119,7 +102,6 @@ export default function ChatDashboard(): React.ReactElement {
                       );
                     }
                   })}
-              {/* <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} /> */}
             </div>
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />

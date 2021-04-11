@@ -3,13 +3,12 @@ import firebase from 'firebase';
 
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
-import './AddContact.scss';
 import { UserModal } from '..';
+
+import './AddContact.scss';
 
 interface AddContactProps {
   userDetails: firebase.firestore.DocumentData;
-  onSetSelectedUser: (user: firebase.firestore.DocumentData) => void;
-  // onClick: (isModal: boolean) => void;
 }
 
 function AddContact(props: AddContactProps): React.ReactElement {
