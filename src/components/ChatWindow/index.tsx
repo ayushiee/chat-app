@@ -6,8 +6,8 @@ import { createMessage } from '../../context/collectionMethods';
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
 import { MessageBubble } from '../index';
-import Chat from '../../assets/Chat.svg';
 
+import Chat from '../../assets/Chat.svg';
 import './ChatWindow.scss';
 
 interface ChatWindow {
@@ -20,15 +20,11 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
   const { currentUser } = useAuth();
   const [msg, setMsg] = useState('');
   const [text, setText] = useState<firebase.firestore.DocumentData>([]);
-  const [currentGroup, setCurrentGroup] = useState(activeGroup);
-  // TODO: Then fetch msgs between them by fetching msg id from groups.msgs[] and then fetch msg text through ids.
 
   const sendMessage = async (e: any) => {
-    console.log('begin');
     e.preventDefault();
 
     const message = createMessage(msg.trim(), currentUser?.uid, activeGroup);
-
     await firestore.collection('messages').doc(message.id).set(message);
     await firestore
       .collection('groups')
@@ -39,24 +35,26 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
     setMsg('');
   };
 
-  useEffect(() => {
-    const message = firestore
-      .collection('messages')
-      // .where('groupId', '==', currentGroup)
-      .orderBy('createdAt', 'asc')
-      .limit(25)
-      .onSnapshot(snapshot => {
-        const docs: firebase.firestore.DocumentData = [];
-        snapshot.forEach(doc => {
-          docs.push({
-            ...doc.data()
-          });
-        });
-        setText(docs);
-      });
 
-    return message;
-  }, []);
+  useEffect(() => {
+    if (activeGroup) {
+      const message = firestore
+        .collection('messages')
+        .where('groupId', '==', activeGroup)
+        .orderBy('createdAt', 'asc')
+        .limit(25)
+        .onSnapshot(snapshot => {
+          const docs: firebase.firestore.DocumentData = [];
+          snapshot.forEach(doc => {
+            docs.push({
+              ...doc.data()
+            });
+          });
+          setText(docs);
+        });
+      return message;
+    }
+  }, [activeGroup]);
 
   return (
     <div className='chatContainer'>
