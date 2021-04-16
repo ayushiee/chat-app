@@ -2,7 +2,7 @@
 
 import cuid from 'cuid';
 
-import { Users, Groups, Message, UserId, GroupId } from '../utils/types';
+import { User, Group, Message, UserId, GroupId } from '../utils/types';
 
 export function createMessage(text: string, createdBy: UserId, groupId: GroupId): Message {
   const message: Message = {
@@ -16,8 +16,8 @@ export function createMessage(text: string, createdBy: UserId, groupId: GroupId)
   return message;
 }
 
-export function createUser(id: UserId, name: string, email: string | null | undefined, groupId: GroupId): Users {
-  const user: Users = {
+export function createUser(id: UserId, name: string, email: string | null, groupId: GroupId): User {
+  const user: User = {
     id,
     name,
     email,
@@ -27,8 +27,8 @@ export function createUser(id: UserId, name: string, email: string | null | unde
   return user;
 }
 
-export function createGroup(user1: UserId, user2: UserId): Groups {
-  const group: Groups = {
+export function createGroup(user1: UserId, user2: UserId): Group {
+  const group: Group = {
     id: cuid(),
     createdAt: new Date(),
     members: [user1, user2]

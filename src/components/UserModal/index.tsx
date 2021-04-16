@@ -20,6 +20,10 @@ function UserModal(props: UserModalProps) {
   const sendMessage = async (e: any) => {
     e.preventDefault();
 
+    if (!currentUser?.uid) {
+      throw new Error('Current user does not exist');
+    }
+
     const group = createGroup(currentUser?.uid, selectedUser?.id);
     const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
 

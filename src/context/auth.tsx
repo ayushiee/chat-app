@@ -43,6 +43,10 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
 
   // Checks if user entry exists in collection or not. Creates new entry if user not found.
   const sendUser = async (user: firebase.User | null): Promise<void> => {
+    if (!user?.uid) {
+      throw new Error('Current user does not exist');
+    }
+
     await firestore
       .collection('users')
       .doc(user?.uid)

@@ -1,19 +1,19 @@
 // Types for firestore collections. 
 
-export type UserId = string | undefined;
+export type UserId = string;
 
-export type GroupId = string | undefined;
+export type GroupId = string;
 
-export type MessageId = string | undefined;
+export type MessageId = string;
 
-export type Users = {
+export type User = {
   id: UserId;
   name: string;
-  email: string | undefined | null;
+  email: string | null;
   group: GroupId[];
 };
 
-export type Groups = {
+export type Group = {
   id: GroupId;
   createdAt: Date;
   members: UserId[];

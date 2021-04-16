@@ -24,6 +24,14 @@ export default function ChatWindow(props: ChatWindow): React.ReactElement {
   const sendMessage = async (e: any) => {
     e.preventDefault();
 
+    if (!currentUser?.uid) {
+      throw new Error('Current user does not exist');
+    }
+
+    if (!activeGroup) {
+      throw new Error('Active group not present');
+    }
+
     const message = createMessage(msg.trim(), currentUser?.uid, activeGroup);
     await firestore.collection('messages').doc(message.id).set(message);
     await firestore
