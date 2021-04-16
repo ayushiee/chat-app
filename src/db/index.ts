@@ -9,17 +9,17 @@ abstract class DB {
 
   abstract subscribeToCurrentUser(currentUserId: UserId, onSnapshot: SnapshotFn): UnsubscribeFn;
 
+  abstract updateUserGroup(userId: UserId, groupId: GroupId): Promise<void>;
+
   // Group
   abstract createGroup(currentUserId: UserId, selectedUserId: UserId): Promise<Group>;
 
-  abstract subscribeToGroups(onSnapshot: SnapshotFn): UnsubscribeFn;
-
   abstract updateGroupMessages(groupId: GroupId, messageId: MessageId): Promise<void>;
+
+  abstract subscribeToGroups(onSnapshot: SnapshotFn): UnsubscribeFn;
 
   // Message
   abstract createMessage(text: string, createdBy: UserId, groupId: GroupId): Promise<Message>;
-
-  abstract updateUserGroup(userId: UserId, groupId: GroupId): Promise<void>;
 
   abstract subscribeToMessages(groupId: GroupId, onSnapshot: SnapshotFn): UnsubscribeFn;
 }
