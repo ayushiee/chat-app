@@ -8,5 +8,10 @@ const firebaseConfig = config.firebase;
 
 firebase.initializeApp(firebaseConfig);
 
-export const auth: firebase.auth.Auth = firebase.auth();
-export const firestore = firebase.firestore();
+export type Auth = firebase.auth.Auth;
+export type Firestore = firebase.firestore.Firestore;
+export type UnsubscribeFn = () => void;
+export type DocumentData = firebase.firestore.DocumentData;
+
+export const auth: Auth = firebase.auth();
+export const firestore: Firestore = firebase.firestore();

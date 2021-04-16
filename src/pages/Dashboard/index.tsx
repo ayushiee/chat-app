@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { IoAddOutline, IoClose, IoExit } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
-import { toast, ToastContainer, Slide } from 'react-toastify';
-import firebase from 'firebase';
-import { IoAddOutline, IoExit, IoClose } from 'react-icons/io5';
-
-import { firestore } from '../../utils/firebase';
-import { useAuth } from '../../context/auth';
-import { ROUTES } from '../../utils/constants';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AddContact, ChatWindow } from '../../components';
 import UserCard from '../../components/UserCard';
-
-import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../../context/auth';
+import { ROUTES } from '../../utils/constants';
+import { DocumentData, firestore, UnsubscribeFn } from '../../utils/firebase';
+import { GroupId, User, UserId } from '../../utils/types';
 import './Dashboard.scss';
 
 export default function ChatDashboard(): React.ReactElement {
   const { logout, currentUser } = useAuth();
   const history = useHistory();
   const [isAddUser, setIsAddUser] = useState<boolean>(false);
-  const [existingUsers, setExistingUsers] = useState<firebase.firestore.DocumentData>([]);
-  const [user, setUser] = useState<firebase.firestore.DocumentData | undefined>();
-  const [userGroup, setUserGroup] = useState([]);
+  const [existingUsers, setExistingUsers] = useState<DocumentData>([]);
+  const [user, setUser] = useState<DocumentData | undefined>();
+  const [userGroup, setUserGroup] = useState<GroupId[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>();
-  const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
+  const [userSelect, setUserSelect] = useState<DocumentData | undefined>();
 
-  const onSelectGroup = (id: string, userSelect: firebase.firestore.DocumentData | undefined) => {
+  const onSelectGroup = (id: string, userSelect: DocumentData | undefined) => {
     setSelectedGroup(id);
     setUserSelect(userSelect);
   };
@@ -38,29 +36,35 @@ export default function ChatDashboard(): React.ReactElement {
     }
   };
 
-  const showExistingUsers = () => {
-    firestore.collection('users').onSnapshot(snapshot => {
-      const docs: firebase.firestore.DocumentData = [];
-      snapshot.forEach(doc => {
-        docs.push({
-          ...doc.data()
-        });
-      });
-      setExistingUsers(docs);
-    });
+  const onIsAddUser = async () => {
+    setIsAddUser(!isAddUser);
+    await updateExistingUsers();
   };
 
-  const getUser = async (id: string | undefined) => {
-    const snapshot = await firestore.collection('users').doc(id).get();
-    return snapshot.data();
+  const updateExistingUsers = async () => {
+    const foundUsers = await firestore.collection('users').get();
+    const existingUsers: User[] = foundUsers.docs.map(foundUser => foundUser.data() as User);
+    setExistingUsers(existingUsers);
   };
 
   useEffect(() => {
-    getUser(currentUser?.uid).then(user => {
-      setUser(user);
-      setUserGroup(user?.group);
-    });
-  }, [user]);
+    let unsubscribeUser: UnsubscribeFn | null = null;
+    if (currentUser?.uid) {
+      unsubscribeUser = firestore.collection('users')
+        .doc(currentUser.uid)
+        .onSnapshot(snapshot => {
+          const user: User = snapshot.data() as User;
+          setUser(user);
+          setUserGroup(user.group);
+        });
+    }
+
+    return () => {
+      if (unsubscribeUser) {
+        unsubscribeUser();
+      }
+    };
+  }, [currentUser]);
 
   return (
     <>
@@ -77,10 +81,7 @@ export default function ChatDashboard(): React.ReactElement {
                     size={24}
                     color='#191970'
                     className='icon'
-                    onClick={() => {
-                      setIsAddUser(!isAddUser);
-                      showExistingUsers();
-                    }}
+                    onClick={onIsAddUser}
                   />
                 )}
                 <IoExit size={22} color='#191970' className='icon' onClick={() => handleLogout()} />
@@ -89,19 +90,22 @@ export default function ChatDashboard(): React.ReactElement {
             <div>
               {isAddUser
                 ? existingUsers &&
-                  existingUsers.map((item: firebase.firestore.DocumentData) => {
-                    if (item.email !== currentUser?.email) {
-                      return <AddContact key={item.id} userDetails={item} />;
-                    }
-                  })
-                : userGroup &&
-                  userGroup.map((item: any, index) => {
-                    if (item.length !== 0) {
-                      return (
-                        <UserCard key={index} groupId={item} onSelectGroup={onSelectGroup} currentUser={user?.id} />
-                      );
-                    }
-                  })}
+                existingUsers.map((item: DocumentData) => {
+                  if (item.email !== currentUser?.email) {
+                    return <AddContact key={item.id} userDetails={item} />;
+                  }
+                })
+                : React.Children.toArray(userGroup.map((groupId: GroupId) => {
+                  if (groupId.length !== 0) {
+                    return (
+                      <UserCard
+                        groupId={groupId}
+                        onSelectGroup={onSelectGroup}
+                        currentUserId={user?.id}
+                      />
+                    );
+                  }
+                }))}
             </div>
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
