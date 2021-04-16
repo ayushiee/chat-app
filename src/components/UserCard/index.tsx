@@ -17,6 +17,7 @@ function UserCard(props: UserCard): React.ReactElement {
   const [name, setName] = useState<string | null>(null);
   const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
 
+  // TODO: should be already resolved to User until it reaches here using DB.getExistingUsers
   const getUserByGroupId = async (groupId: GroupId): Promise<User> => {
     const snapShot = await firestore.collection('groups').doc(groupId).get();
     const groupData = snapShot.data();

@@ -24,11 +24,15 @@ function UserModal(props: UserModalProps) {
       throw new Error('Current user does not exist');
     }
 
+    // TODO: DB.createGroup
     const group = createGroup(currentUser?.uid, selectedUser?.id);
-    const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
-
     await firestore.collection('groups').doc(group.id).set(group);
+
+    // TODO: DB.createMessage
+    const message = createMessage(firstMsg.trim(), currentUser?.uid, group.id);
     await firestore.collection('messages').doc(message.id).set(message);
+    
+    // TODO: DB.updateGroupMessages
     await firestore
       .collection('groups')
       .doc(group.id)
@@ -38,12 +42,14 @@ function UserModal(props: UserModalProps) {
     setFirstMsg('');
 
     // updating group id at both users
+    // TODO: DB.updateUserGroup with currentUserId as userId
     await firestore
       .collection('users')
       .doc(currentUser?.uid)
       .update({
         group: firebase.firestore.FieldValue.arrayUnion(group.id)
       });
+    // TODO: DB.updateUserGroup with selectedUserId as userId
     await firestore
       .collection('users')
       .doc(selectedUser?.id)

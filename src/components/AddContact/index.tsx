@@ -21,6 +21,7 @@ function AddContact(props: AddContactProps): React.ReactElement {
   const userGroup = [currentUser?.uid, userDetails?.id];
 
   useEffect(() => {
+    // TODO: DB.subscribeToGroups
     const groups = firestore.collection('groups').onSnapshot(snapshot => {
       const docs: firebase.firestore.DocumentData = [];
       snapshot.forEach(doc => {

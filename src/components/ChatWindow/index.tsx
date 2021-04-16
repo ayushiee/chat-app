@@ -32,9 +32,11 @@ export default function ChatWindow(props: ChatWindowProps): React.ReactElement {
       throw new Error('Active group not present');
     }
 
+    // TODO: DB.createMessage
     const message = createMessage(msg.trim(), currentUser.uid, activeGroup);
     await firestore.collection('messages').doc(message.id).set(message);
     setMsg('');
+    // DB.updateGroupMessages
     await firestore
       .collection('groups')
       .doc(activeGroup)
@@ -48,6 +50,7 @@ export default function ChatWindow(props: ChatWindowProps): React.ReactElement {
     let unsubscribeMessage: UnsubscribeFn | null = null;
 
     if (activeGroup) {
+      // TODO: DB.subscribeToMessages
       unsubscribeMessage = firestore
         .collection('messages')
         .where('groupId', '==', activeGroup)

@@ -8,7 +8,7 @@ import UserCard from '../../components/UserCard';
 import { useAuth } from '../../context/auth';
 import { ROUTES } from '../../utils/constants';
 import { DocumentData, firestore, UnsubscribeFn } from '../../utils/firebase';
-import { GroupId, User, UserId } from '../../utils/types';
+import { GroupId, User } from '../../utils/types';
 import './Dashboard.scss';
 
 export default function ChatDashboard(): React.ReactElement {
@@ -42,6 +42,7 @@ export default function ChatDashboard(): React.ReactElement {
   };
 
   const updateExistingUsers = async () => {
+    // TODO: DB.getExistingUsers, resolve directly to User[], in a single query rather than (UserId -> User)[]
     const foundUsers = await firestore.collection('users').get();
     const existingUsers: User[] = foundUsers.docs.map(foundUser => foundUser.data() as User);
     setExistingUsers(existingUsers);
@@ -50,6 +51,7 @@ export default function ChatDashboard(): React.ReactElement {
   useEffect(() => {
     let unsubscribeUser: UnsubscribeFn | null = null;
     if (currentUser?.uid) {
+      // TODO: DB.subscribeToCurrentUser
       unsubscribeUser = firestore.collection('users')
         .doc(currentUser.uid)
         .onSnapshot(snapshot => {
