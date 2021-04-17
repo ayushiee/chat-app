@@ -16,6 +16,7 @@ function UserCard(props: UserCard): React.ReactElement {
   const { groupId, onSelectGroup, currentUserId } = props;
   const [name, setName] = useState<string | null>(null);
   const [userSelect, setUserSelect] = useState<firebase.firestore.DocumentData | undefined>();
+  const userName = name?.substring(0, name.lastIndexOf('@'));
 
   // TODO: should be already resolved to User until it reaches here using DB.getExistingUsers
   const getUserByGroupId = async (groupId: GroupId): Promise<User> => {
@@ -38,8 +39,8 @@ function UserCard(props: UserCard): React.ReactElement {
 
   return (
     <div className='userContainer' onClick={() => onSelectGroup(groupId, userSelect)}>
-      <div className='avatar'>{name?.charAt(0)}</div>
-      <div className='name'>{name}</div>
+      <div className='avatar'>{userName?.charAt(0)}</div>
+      <div className='name'>{userName}</div>
     </div>
   );
 }

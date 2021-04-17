@@ -19,6 +19,7 @@ function AddContact(props: AddContactProps): React.ReactElement {
   const [isModal, setIsModal] = useState<boolean>(false);
   const [groups, setGroups] = useState<firebase.firestore.DocumentData>();
   const userGroup = [currentUser?.uid, userDetails?.id];
+  const userEmail = email?.substring(0, email.lastIndexOf('@'));
 
   useEffect(() => {
     // TODO: DB.subscribeToGroups
@@ -51,8 +52,8 @@ function AddContact(props: AddContactProps): React.ReactElement {
           onClick={() => setSelectedUser(userDetails)}
         >
           <div className='title' onClick={() => setIsModal(!isModal)}>
-            <div className='avatarNew'>{email?.charAt(0)}</div>
-            <div className='email'>{email}</div>
+            <div className='avatarNew'>{userEmail?.charAt(0)}</div>
+            <div className='email'>{userEmail}</div>
           </div>
           <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
         </div>
