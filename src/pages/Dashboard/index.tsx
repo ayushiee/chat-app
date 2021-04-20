@@ -3,12 +3,15 @@ import { IoAddOutline, IoClose, IoExit } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import { AddContact, ChatWindow } from '../../components';
 import UserCard from '../../components/UserCard';
 import { useAuth } from '../../context/auth';
 import { ROUTES } from '../../utils/constants';
-import { DocumentData, firestore, UnsubscribeFn } from '../../utils/firebase';
+import { DocumentData, UnsubscribeFn } from '../../utils/firebase';
 import { GroupId, User } from '../../utils/types';
+import DB from '../../db';
+
 import './Dashboard.scss';
 
 export default function ChatDashboard(): React.ReactElement {
@@ -42,23 +45,19 @@ export default function ChatDashboard(): React.ReactElement {
   };
 
   const updateExistingUsers = async () => {
-    // TODO: DB.getExistingUsers, resolve directly to User[], in a single query rather than (UserId -> User)[]
-    const foundUsers = await firestore.collection('users').get();
-    const existingUsers: User[] = foundUsers.docs.map(foundUser => foundUser.data() as User);
-    setExistingUsers(existingUsers);
+    DB.getExistingUsers().then(res => {
+      setExistingUsers(res);
+    });
   };
 
   useEffect(() => {
     let unsubscribeUser: UnsubscribeFn | null = null;
     if (currentUser?.uid) {
-      // TODO: DB.subscribeToCurrentUser
-      unsubscribeUser = firestore.collection('users')
-        .doc(currentUser.uid)
-        .onSnapshot(snapshot => {
-          const user: User = snapshot.data() as User;
-          setUser(user);
-          setUserGroup(user.group);
-        });
+      unsubscribeUser = DB.subscribeToCurrentUser(currentUser.uid, snapshot => {
+        const user: User = snapshot.data() as User;
+        setUser(user);
+        setUserGroup(user.group);
+      });
     }
 
     return () => {
@@ -79,12 +78,7 @@ export default function ChatDashboard(): React.ReactElement {
                 {isAddUser ? (
                   <IoClose size={24} color='#191970' className='icon' onClick={() => setIsAddUser(!isAddUser)} />
                 ) : (
-                  <IoAddOutline
-                    size={24}
-                    color='#191970'
-                    className='icon'
-                    onClick={onIsAddUser}
-                  />
+                  <IoAddOutline size={24} color='#191970' className='icon' onClick={onIsAddUser} />
                 )}
                 <IoExit size={22} color='#191970' className='icon' onClick={() => handleLogout()} />
               </div>
@@ -92,22 +86,18 @@ export default function ChatDashboard(): React.ReactElement {
             <div>
               {isAddUser
                 ? existingUsers &&
-                existingUsers.map((item: DocumentData) => {
-                  if (item.email !== currentUser?.email) {
-                    return <AddContact key={item.id} userDetails={item} />;
-                  }
-                })
-                : React.Children.toArray(userGroup.map((groupId: GroupId) => {
-                  if (groupId.length !== 0) {
-                    return (
-                      <UserCard
-                        groupId={groupId}
-                        onSelectGroup={onSelectGroup}
-                        currentUserId={user?.id}
-                      />
-                    );
-                  }
-                }))}
+                  existingUsers.map((item: DocumentData) => {
+                    if (item.email !== currentUser?.email) {
+                      return <AddContact key={item.id} userDetails={item} />;
+                    }
+                  })
+                : React.Children.toArray(
+                  userGroup.map((groupId: GroupId) => {
+                    if (groupId.length !== 0) {
+                      return <UserCard groupId={groupId} onSelectGroup={onSelectGroup} currentUserId={user?.id} />;
+                    }
+                  })
+                )}
             </div>
           </div>
           <ChatWindow activeUser={userSelect} activeGroup={selectedGroup} />
