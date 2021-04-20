@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
 import { IoIosSend, IoIosCall, IoIosVideocam, IoMdMore } from 'react-icons/io';
 
-import { createMessage } from '../../context/collectionMethods';
+import { createNewMessage } from '../../context/collectionMethods';
 import { firestore, DocumentData, UnsubscribeFn } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
 import { MessageBubble } from '../index';
@@ -33,7 +33,7 @@ export default function ChatWindow(props: ChatWindowProps): React.ReactElement {
     }
 
     // TODO: DB.createMessage
-    const message = createMessage(msg.trim(), currentUser.uid, activeGroup);
+    const message = createNewMessage(msg.trim(), currentUser.uid, activeGroup);
     await firestore.collection('messages').doc(message.id).set(message);
     setMsg('');
     // DB.updateGroupMessages

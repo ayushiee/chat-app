@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import firebase from 'firebase';
 
 import { auth, firestore } from '../utils/firebase';
-import { createUser } from './collectionMethods';
+import { createNewUser } from './collectionMethods';
 
 interface AuthContextProps {
   children?: JSX.Element;
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
         if (docSnapshot.exists) {
           return;
         } else {
-          const newUser = createUser(user?.uid, '', user?.email, '');
+          const newUser = createNewUser(user?.uid, '', user?.email, '');
           await firestore.collection('users').doc(newUser.id).set(newUser);
         }
       });
