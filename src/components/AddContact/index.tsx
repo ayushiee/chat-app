@@ -4,6 +4,7 @@ import firebase from 'firebase';
 import { firestore } from '../../utils/firebase';
 import { useAuth } from '../../context/auth';
 import { UserModal } from '..';
+import DB from '../../db';
 
 import './AddContact.scss';
 
@@ -53,7 +54,7 @@ function AddContact(props: AddContactProps): React.ReactElement {
         >
           <div className='title' onClick={() => setIsModal(!isModal)}>
             <div className='avatarNew'>{userEmail?.charAt(0)}</div>
-            <div className='email'>{userEmail}</div>
+            <div className='name'>{userEmail}</div>
           </div>
           <UserModal isOpen={isModal} currentUser={currentUser} selectedUser={selectedUser} />
         </div>
