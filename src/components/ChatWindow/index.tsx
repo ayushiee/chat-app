@@ -38,7 +38,7 @@ export default function ChatWindow(props: ChatWindowProps): React.ReactElement {
       setMessage(res);
     });
     setMsg('');
-    if (message) DB.updateGroupMessages(activeGroup, message.id);
+    message && DB.updateGroupMessages(activeGroup, message.id);
   };
 
   useEffect(() => {

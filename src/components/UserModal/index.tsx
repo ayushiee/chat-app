@@ -44,8 +44,8 @@ function UserModal(props: UserModalProps) {
     setFirstMsg('');
 
     // updating group id at both users
-    DB.updateUserGroup(currentUser?.uid, group.id);
-    DB.updateUserGroup(selectedUser?.uid, group.id);
+    DB.updateUserGroup(currentUser?.uid, group?.id);
+    DB.updateUserGroup(selectedUser?.uid, group?.id);
   };
 
   return isOpen ? (

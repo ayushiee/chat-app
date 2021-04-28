@@ -56,7 +56,7 @@ export default function ChatDashboard(): React.ReactElement {
       unsubscribeUser = DB.subscribeToCurrentUser(currentUser.uid, snapshot => {
         const user: User = snapshot.data() as User;
         setUser(user);
-        setUserGroup(user.group);
+        user && setUserGroup(user.group);
       });
     }
 
