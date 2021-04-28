@@ -3,7 +3,6 @@ import firebase from 'firebase';
 import { IoIosSend } from 'react-icons/io';
 
 import { firestore } from '../../utils/firebase';
-import { Group, Message } from '../../utils/types';
 import { createNewMessage, createNewGroup } from '../../context/collectionMethods';
 import DB from '../../db';
 
@@ -18,8 +17,8 @@ interface UserModalProps {
 function UserModal(props: UserModalProps) {
   const { isOpen, currentUser, selectedUser } = props;
   const [firstMsg, setFirstMsg] = useState('');
-  const [group, setGroup] = useState<Group>();
-  const [message, setMessage] = useState<Message>();
+  // const [group, setGroup] = useState<Group>();
+  // const [message, setMessage] = useState<Message>();
 
   const sendMessage = async (event: any) => {
     event.preventDefault();
@@ -29,33 +28,24 @@ function UserModal(props: UserModalProps) {
     }
 
     // TODO: DB.createGroup
-    // const group = createNewGroup(currentUser?.uid, selectedUser?.id);
-    // await firestore.collection('groups').doc(group.id).set(group);
+    const group = createNewGroup(currentUser?.uid, selectedUser?.id);
+    await firestore.collection('groups').doc(group.id).set(group);
 
-    DB.createGroup(currentUser?.uid, selectedUser?.id).then(res => setGroup(res));
+    const message = createNewMessage(firstMsg.trim(), currentUser?.uid, group.id);
+    await firestore.collection('messages').doc(message.id).set(message);
 
-    // TODO: DB.createMessage
-    // const message = createNewMessage(firstMsg.trim(), currentUser?.uid, group.id);
-    // await firestore.collection('messages').doc(message.id).set(message);
-    if (group) {
-      DB.createMessage(firstMsg, currentUser?.uid, group?.id).then(res => setMessage(res));
+    // TODO: DB.updateGroupMessages
+    await firestore
+      .collection('groups')
+      .doc(group.id)
+      .update({
+        messages: firebase.firestore.FieldValue.arrayUnion(message.id)
+      });
+    setFirstMsg('');
 
-      if (message) {
-        // TODO: DB.updateGroupMessages
-        // await firestore
-        //   .collection('groups')
-        //   .doc(group.id)
-        //   .update({
-        //     messages: firebase.firestore.FieldValue.arrayUnion(message.id)
-        //   });
-        DB.updateGroupMessages(group.id, message.id);
-        setFirstMsg('');
-
-        // updating group id at both users
-        DB.updateUserGroup(currentUser?.uid, group.id);
-        DB.updateUserGroup(selectedUser?.uid, group.id);
-      }
-    }
+    // updating group id at both users
+    DB.updateUserGroup(currentUser?.uid, group.id);
+    DB.updateUserGroup(selectedUser?.uid, group.id);
   };
 
   return isOpen ? (
