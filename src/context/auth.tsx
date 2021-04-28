@@ -55,7 +55,7 @@ export function AuthProvider({ children }: AuthContextProps): JSX.Element {
         if (docSnapshot.exists) {
           return;
         } else {
-          const newUser = createNewUser(user?.uid, '', user?.email, '');
+          const newUser = createNewUser(user?.uid, user?.email, '');
           await firestore.collection('users').doc(newUser.id).set(newUser);
         }
       });

@@ -16,12 +16,12 @@ export function createNewMessage(text: string, createdBy: UserId, groupId: Group
   return message;
 }
 
-export function createNewUser(id: UserId, name: string, email: string | null, groupId: GroupId): User {
+export function createNewUser(id: UserId, email: string | null, groupId: GroupId): User {
   const user: User = {
     id,
-    name,
     email,
-    group: [groupId]
+    group: [groupId],
+    createdAt: new Date()
   };
 
   return user;

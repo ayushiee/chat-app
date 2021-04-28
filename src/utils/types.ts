@@ -8,7 +8,7 @@ export type MessageId = string;
 
 export type User = {
   id: UserId;
-  name: string;
+  createdAt: Date;
   email: string | null;
   group: GroupId[];
 };
