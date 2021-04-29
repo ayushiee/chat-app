@@ -1,7 +1,7 @@
 # Chat App
 A basic Chat App made using Firestore.
 
-Shoutout to [@karanpratapsingh](https://github.com/karanpratapsingh) for revieweing the repo and suggesting optimizations!
+Big thanks to [@karanpratapsingh](https://github.com/karanpratapsingh) for reviewing the repo and suggesting optimizations!
 
 ## Demo
 ![Demo-1](src/assets/Demo-1.gif)
