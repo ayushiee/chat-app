@@ -11,6 +11,9 @@ Big thanks to [@karanpratapsingh](https://github.com/karanpratapsingh) for revie
 ![Demo-2](src/assets/Demo-2.gif)
 <br />
 
+![Demo-3](src/assets/Demo-3.gif)
+<br />
+
 ## Technologies used
 ![Tech used](src/assets/techUsed.png)
 
