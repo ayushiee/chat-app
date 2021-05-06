@@ -6,12 +6,12 @@ Big thanks to [@karanpratapsingh](https://github.com/karanpratapsingh) for revie
 ## Demo
 ![Demo-1](src/assets/Demo-1.gif)
 <br />
-<br />
 
 ![Demo-2](src/assets/Demo-2.gif)
 <br />
 
 ![Demo-3](src/assets/Demo-3.gif)
+<br />
 <br />
 
 ## Technologies used
